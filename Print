@@ -1,0 +1,48 @@
+import javax.print.DocFlavor;
+import javax.print.PrintService;
+import javax.print.PrintServiceLookup;
+import javax.print.SimpleDoc;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+
+public class DirectPrintExample {
+
+    public static void main(String[] args) {
+        // Specify the printer name
+        String printerName = "Your_Printer_Name";
+
+        // Get the specified printer
+        PrintService printerService = getPrintServiceByName(printerName);
+
+        if (printerService != null) {
+            // Create a simple document with your content
+            String content = "This is the content that will be printed.";
+            byte[] contentBytes = content.getBytes();
+            DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;
+            SimpleDoc doc = new SimpleDoc(contentBytes, flavor, null);
+
+            // Create a print request attribute set
+            PrintRequestAttributeSet attributeSet = new HashPrintRequestAttributeSet();
+
+            // Print the document to the specified printer
+            try {
+                printerService.createPrintJob().print(doc, attributeSet);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("Printer not found: " + printerName);
+        }
+    }
+
+    // Get a PrintService by name
+    private static PrintService getPrintServiceByName(String printerName) {
+        PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
+        for (PrintService service : printServices) {
+            if (service.getName().equalsIgnoreCase(printerName)) {
+                return service;
+            }
+        }
+        return null;
+    }
+}
