@@ -1,3 +1,4 @@
+Copy code
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
@@ -37,7 +38,6 @@ public class HideTextInImage {
             for (int x = 0; x < width; x++) {
                 if (textIndex < textLength) {
                     int pixel = image.getRGB(x, y);
-                    int alpha = (pixel >> 24) & 0xFF;
                     int red = (pixel >> 16) & 0xFF;
                     int green = (pixel >> 8) & 0xFF;
                     int blue = pixel & 0xFF;
@@ -46,11 +46,11 @@ public class HideTextInImage {
                     int charValue = (int) currentChar;
 
                     // Hide the character in the least significant bits of the RGB channels
-                    red = (red & 0xFE) | ((charValue >> 7) & 1);
-                    green = (green & 0xFE) | ((charValue >> 6) & 1);
-                    blue = (blue & 0xFE) | ((charValue >> 5) & 1);
+                    red = (red & 0xFC) | ((charValue >> 6) & 3);
+                    green = (green & 0xFC) | ((charValue >> 4) & 3);
+                    blue = (blue & 0xFC) | ((charValue >> 2) & 3);
 
-                    pixel = (alpha << 24) | (red << 16) | (green << 8) | blue;
+                    pixel = (pixel & 0xFF000000) | (red << 16) | (green << 8) | blue;
                     image.setRGB(x, y, pixel);
 
                     textIndex++;
