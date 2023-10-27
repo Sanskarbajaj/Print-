@@ -1,109 +1,43 @@
-Copy code
-import java.awt.image.BufferedImage;
-import java.io.File;
-import javax.imageio.ImageIO;
-import java.io.IOException;
+Windows file systems do not natively support POSIX-style file permissions. POSIX file permissions are a concept primarily associated with Unix-like operating systems. However, you can emulate some level of file permission control on Windows using Java, but it won't be as fine-grained as on Unix-like systems.
 
-public class HideTextInImage {
+To set file permissions on Windows, you can use the `java.nio.file.attribute.AclFileAttributeView` class, which provides an abstract view of an access control list (ACL). Here's a basic example of how to set file permissions in Windows:
 
-    public static void main(String[] args) {
+```java
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.attribute.AclEntry;
+import java.nio.file.attribute.AclFileAttributeView;
+import java.nio.file.attribute.AclEntryPermission;
+import java.nio.file.attribute.AclEntryType;
+import java.nio.file.attribute.UserPrincipal;
+import java.nio.file.attribute.UserPrincipalLookupService;
+import java.nio.file.attribute.UserPrincipalNotFoundException;
+
+public class SetWindowsFilePermissions {
+    public static void main(String[] args) throws Exception {
+        Path filePath = Path.of("file.txt"); // Specify the path to your file
+
+        UserPrincipalLookupService lookupService = FileSystems.getDefault().getUserPrincipalLookupService();
+
         try {
-            // Load the image
-            BufferedImage image = ImageIO.read(new File("original_image.png"));
+            UserPrincipal user = lookupService.lookupPrincipalByName("YOUR_USERNAME"); // Replace with the username
+            AclEntry entry = AclEntry.newBuilder()
+                    .setType(AclEntryType.ALLOW)
+                    .setPrincipal(user)
+                    .setPermissions(AclEntryPermission.READ_DATA, AclEntryPermission.READ_ATTRIBUTES)
+                    .build();
 
-            // Text to hide
-            String textToHide = "This is a hidden message";
+            AclFileAttributeView aclView = Files.getFileAttributeView(filePath, AclFileAttributeView.class);
+            aclView.setAcl(entry);
 
-            // Encode and hide the text in the image
-            hideTextInImage(image, textToHide);
-
-            // Save the modified image with the hidden text
-            File outputImage = new File("image_with_hidden_text.png");
-            ImageIO.write(image, "png", outputImage);
-
-            System.out.println("Text hidden in the image.");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void hideTextInImage(BufferedImage image, String text) {
-        int width = image.getWidth();
-        int height = image.getHeight();
-        int textLength = text.length();
-        int textIndex = 0;
-
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                if (textIndex < textLength) {
-                    int pixel = image.getRGB(x, y);
-                    int red = (pixel >> 16) & 0xFF;
-                    int green = (pixel >> 8) & 0xFF;
-                    int blue = pixel & 0xFF;
-
-                    char currentChar = text.charAt(textIndex);
-                    int charValue = (int) currentChar;
-
-                    // Hide the character in the least significant bits of the RGB channels
-                    red = (red & 0xFC) | ((charValue >> 6) & 3);
-                    green = (green & 0xFC) | ((charValue >> 4) & 3);
-                    blue = (blue & 0xFC) | ((charValue >> 2) & 3);
-
-                    pixel = (pixel & 0xFF000000) | (red << 16) | (green << 8) | blue;
-                    image.setRGB(x, y, pixel);
-
-                    textIndex++;
-                }
-            }
+            System.out.println("File permissions set successfully.");
+        } catch (UserPrincipalNotFoundException e) {
+            System.err.println("User not found.");
         }
     }
 }
+```
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import javax.imageio.ImageIO;
-import java.io.IOException;
+Replace `"YOUR_USERNAME"` with the Windows username for which you want to set file permissions.
 
-public class ReadTextFromImage {
-
-    public static void main(String[] args) {
-        try {
-            // Load the image with hidden text
-            BufferedImage image = ImageIO.read(new File("image_with_hidden_text.png"));
-
-            // Extract and print the hidden text
-            String hiddenText = extractTextFromImage(image);
-            System.out.println("Hidden text: " + hiddenText);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static String extractTextFromImage(BufferedImage image) {
-        int width = image.getWidth();
-        int height = image.getHeight();
-        StringBuilder textBuilder = new StringBuilder();
-        int charValue = 0;
-        int charIndex = 0;
-
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                int pixel = image.getRGB(x, y);
-                int blue = pixel & 0x03; // Extract the last 2 bits from the blue channel
-
-                charValue = (charValue << 2) | blue;
-                charIndex += 2;
-
-                if (charIndex >= 8) {
-                    textBuilder.append((char) charValue);
-                    charValue = 0;
-                    charIndex = 0;
-                }
-            }
-        }
-
-        return textBuilder.toString();
-    }
-}
+Keep in mind that this approach sets a basic level of access control and is specific to Windows systems. It doesn't provide the same granularity as POSIX file permissions on Unix-like systems. Additionally, the specific permissions and API may vary depending on your Java version and Windows system.
