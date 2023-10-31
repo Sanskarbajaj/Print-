@@ -1,0 +1,55 @@
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.security.KeyStore;
+import java.security.KeyStore.PasswordProtection;
+import java.security.KeyStore.Entry;
+import java.security.KeyStore.PrivateKeyEntry;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.io.File;
+
+public class CreateNewKeystoreFromOld {
+    public static void main(String[] args) {
+        String oldKeystorePath = "old_keystore.jceks";
+        String newKeystorePath = "new_keystore.jceks";
+        char[] oldKeystorePassword = "old_password".toCharArray();
+        char[] newKeystorePassword = "new_password".toCharArray();
+
+        try {
+            // Load the old keystore
+            KeyStore oldKeystore = KeyStore.getInstance("JCEKS");
+            try (FileInputStream fis = new FileInputStream(oldKeystorePath)) {
+                oldKeystore.load(fis, oldKeystorePassword);
+            }
+
+            // Create a new keystore
+            KeyStore newKeystore = KeyStore.getInstance("JCEKS");
+            newKeystore.load(null, newKeystorePassword);
+
+            // Iterate through the old keystore and copy entries to the new keystore
+            for (String alias : oldKeystore.aliases()) {
+                Entry entry = oldKeystore.getEntry(alias, new PasswordProtection(oldKeystorePassword));
+                newKeystore.setEntry(alias, entry, new PasswordProtection(newKeystorePassword));
+            }
+
+            // Save the new keystore
+            try (FileOutputStream fos = new FileOutputStream(newKeystorePath)) {
+                newKeystore.store(fos, newKeystorePassword);
+            }
+
+            // Optionally, delete the old keystore file
+            File oldKeystoreFile = new File(oldKeystorePath);
+            if (oldKeystoreFile.exists() && oldKeystoreFile.delete()) {
+                System.out.println("Old keystore deleted.");
+            } else {
+                System.out.println("Old keystore not deleted or not found.");
+            }
+
+            System.out.println("New keystore created successfully.");
+
+        } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | java.io.IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
