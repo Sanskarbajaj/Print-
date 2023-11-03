@@ -1,0 +1,33 @@
+import java.nio.file.Path;
+import java.io.IOException;
+import java.nio.file.attribute.AclEntry;
+import java.nio.file.attribute.AclEntryPermission;
+import java.nio.file.attribute.AclEntryType;
+import java.nio.file.attribute.AclFileAttributeView;
+import java.nio.file.Files;
+
+public class JceksFilePermissionExample {
+    public static void main(String[] args) {
+        // Specify the path to your JCEKS file
+        Path jceksFilePath = Path.of("path\\to\\your\\file.jceks");
+
+        try {
+            // Get the ACL view for the file
+            AclFileAttributeView aclView = Files.getFileAttributeView(jceksFilePath, AclFileAttributeView.class);
+
+            // Create an ACL entry with restricted permissions (e.g., read and write for the owner)
+            AclEntry.Builder builder = AclEntry.newBuilder();
+            builder.setPrincipal(Files.getOwner(jceksFilePath));
+            builder.setType(AclEntryType.ALLOW);
+            builder.setPermissions(AclEntryPermission.READ_DATA, AclEntryPermission.WRITE_DATA);
+            AclEntry aclEntry = builder.build();
+
+            // Set the ACL entry on the file
+            aclView.setAcl(java.util.Collections.singletonList(aclEntry));
+
+            System.out.println("File permissions set successfully.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
