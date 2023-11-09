@@ -1,0 +1,23 @@
+import net.zetetic.sqlcipher.Driver;
+
+public class SQLCipherExample {
+
+    public static void main(String[] args) throws Exception {
+        String dbPath = "/path/to/database.db";
+        String password = "mypassword";
+
+        Connection conn = DriverManager.getConnection("jdbc:sqlite:" + dbPath, "", password);
+
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery("SELECT * FROM mytable");
+
+        while (rs.next()) {
+            System.out.println(rs.getString("column1"));
+            System.out.println(rs.getString("column2"));
+        }
+
+        rs.close();
+        stmt.close();
+        conn.close();
+    }
+}
