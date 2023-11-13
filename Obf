@@ -1,0 +1,23 @@
+To use a Java obfuscator in a Maven project, you can follow these general steps:Choose an Obfuscator: Select a Java obfuscator that suits your project. ProGuard and yGuard are popular choices.Add Obfuscator Plugin to Maven Configuration:Add the obfuscator plugin to your project's pom.xml file. Here's an example for ProGuard:<build>
+    <plugins>
+        <plugin>
+            <groupId>com.github.wvengen</groupId>
+            <artifactId>proguard-maven-plugin</artifactId>
+            <version>2.2.0</version>
+            <executions>
+                <execution>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>proguard</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <!-- ProGuard configuration options go here -->
+            </configuration>
+        </plugin>
+    </plugins>
+</build>Make sure to replace the version number with the latest available for the plugin.Configure Obfuscator: Configure the obfuscator in the plugin configuration section. For example, you'll need to specify the ProGuard configuration file:<configuration>
+    <proguardInclude>${project.build.directory}/proguard.pro</proguardInclude>
+    <!-- Other ProGuard configuration options go here -->
+</configuration>Create ProGuard Configuration File: Create a ProGuard configuration file (e.g., proguard.pro) and specify rules for obfuscation, keep classes/methods/fields that shouldn't be obfuscated, etc. Refer to the ProGuard documentation for details.Run Maven Build: Execute your Maven build. The obfuscation process will be triggered during the specified phase (in the example, it's the package phase).mvn clean packageCheck Output: After a successful build, check the output directory for the obfuscated JAR file.Remember to adjust the configuration based on your project's requirements. Always refer to the documentation of the specific obfuscator and Maven plugin you're using for detailed options and customization.
