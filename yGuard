@@ -1,0 +1,27 @@
+<build>
+    <plugins>
+        <plugin>
+            <groupId>com.yworks</groupId>
+            <artifactId>yguard-maven-plugin</artifactId>
+            <version>3.0.2</version>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>yguard</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <inoutpair>
+                    <fileset>
+                        <directory>${project.build.directory}/classes</directory>
+                        <includes>
+                            <include>**/*.class</include>
+                        </includes>
+                    </fileset>
+                    <inoutmapper type="glob" from="*.class" to="obfuscated/*.class"/>
+                </inoutpair>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
