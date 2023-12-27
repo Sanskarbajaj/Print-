@@ -13,8 +13,8 @@ public class XMLUpdaterExample {
     public static void main(String[] args) {
         String filePath = "path/to/your/example.xml";
         int targetPersonId = 2;
-        String attributeName = "newAttribute";
-        String attributeValue = "someValue";
+        String childElementName = "newChild";
+        String childElementValue = "childValue";
 
         try {
             File xmlFile = new File(filePath);
@@ -29,13 +29,10 @@ public class XMLUpdaterExample {
                 int id = Integer.parseInt(person.getAttribute("id"));
 
                 if (id == targetPersonId) {
-                    // Check if the attribute already exists
-                    if (!person.hasAttribute(attributeName)) {
-                        // Create a new attribute node and append it to the person element
-                        Attr newAttribute = doc.createAttribute(attributeName);
-                        newAttribute.setValue(attributeValue);
-                        person.setAttributeNode(newAttribute);
-                    }
+                    // Create a new child element and append it to the person element
+                    Element newChildElement = doc.createElement(childElementName);
+                    newChildElement.appendChild(doc.createTextNode(childElementValue));
+                    person.appendChild(newChildElement);
                     break; // No need to continue searching
                 }
             }
