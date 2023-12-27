@@ -1,0 +1,61 @@
+import org.w3c.dom.*;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.File;
+
+public class XMLUpdaterExample {
+
+    public static void main(String[] args) {
+        String filePath = "path/to/your/example.xml";
+        int targetPersonId = 2;
+        String attributeName = "age";
+        String attributeValue = "35";
+
+        try {
+            File xmlFile = new File(filePath);
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+            Document doc = docBuilder.parse(xmlFile);
+
+            // Find the person with the specified ID
+            NodeList personList = doc.getElementsByTagName("person");
+            for (int i = 0; i < personList.getLength(); i++) {
+                Element person = (Element) personList.item(i);
+                int id = Integer.parseInt(person.getAttribute("id"));
+
+                if (id == targetPersonId) {
+                    // Update or add the attribute
+                    person.setAttribute(attributeName, attributeValue);
+                    break; // No need to continue searching
+                }
+            }
+
+            // Save the changes back to the XML file
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(doc);
+            StreamResult result = new StreamResult(xmlFile);
+            transformer.transform(source, result);
+
+            System.out.println("XML file updated successfully!");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+<root>
+    <person id="1">
+        <name>John</name>
+        <age>25</age>
+    </person>
+    <person id="2">
+        <name>Jane</name>
+        <age>30</age>
+    </person>
+</root>
