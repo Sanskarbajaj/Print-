@@ -1,0 +1,52 @@
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.File;
+
+public class XMLUpdater {
+
+    public static void main(String[] args) {
+        String filePath = "path/to/your/xml/file.xml";
+        String attributeName = "yourAttribute";
+        String attributeValue = "newValue";
+
+        try {
+            // Load the XML file
+            File xmlFile = new File(filePath);
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+            Document doc = docBuilder.parse(xmlFile);
+
+            // Check if the attribute exists
+            Node node = doc.getDocumentElement();
+            Element element = (Element) node;
+            if (element.hasAttribute(attributeName)) {
+                // Update existing attribute
+                element.setAttribute(attributeName, attributeValue);
+            } else {
+                // Add new attribute
+                element.setAttribute(attributeName, attributeValue);
+            }
+
+            // Save the changes back to the XML file
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(doc);
+            StreamResult result = new StreamResult(xmlFile);
+            transformer.transform(source, result);
+
+            System.out.println("XML file updated successfully!");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
