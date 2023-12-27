@@ -7,16 +7,26 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class XMLUpdaterExample {
 
     public static void main(String[] args) {
         String filePath = "path/to/your/example.xml";
         int targetPersonId = 2;
-        String attributeName = "newAttribute";
-        String attributeValue = "attributeValue";
-        String childElementName = "newChild";
-        String childElementValue = "childValue";
+
+        List<String> attributeNames = Arrays.asList("newAttribute1", "newAttribute2");
+        List<String> attributeValues = Arrays.asList("value1", "value2");
+        List<String> childElementNames = Arrays.asList("newChild1", "newChild2");
+        List<String> childElementValues = Arrays.asList("childValue1", "childValue2");
+
+        // Attributes for child elements
+        Map<String, List<String>> childElementAttributes = new HashMap<>();
+        childElementAttributes.put("newChild1", Arrays.asList("childAttribute1", "childAttribute2"));
+        childElementAttributes.put("newChild2", Arrays.asList("childAttribute3", "childAttribute4"));
 
         try {
             File xmlFile = new File(filePath);
@@ -31,13 +41,26 @@ public class XMLUpdaterExample {
                 int id = Integer.parseInt(person.getAttribute("id"));
 
                 if (id == targetPersonId) {
-                    // Add a new attribute
-                    person.setAttribute(attributeName, attributeValue);
+                    // Add attributes
+                    for (int j = 0; j < attributeNames.size(); j++) {
+                        person.setAttribute(attributeNames.get(j), attributeValues.get(j));
+                    }
 
-                    // Create a new child element and append it to the person element
-                    Element newChildElement = doc.createElement(childElementName);
-                    newChildElement.appendChild(doc.createTextNode(childElementValue));
-                    person.appendChild(newChildElement);
+                    // Add child elements
+                    for (int k = 0; k < childElementNames.size(); k++) {
+                        Element newChildElement = doc.createElement(childElementNames.get(k));
+                        newChildElement.appendChild(doc.createTextNode(childElementValues.get(k)));
+                        
+                        // Add attributes for child elements
+                        if (childElementAttributes.containsKey(childElementNames.get(k))) {
+                            List<String> childAttributes = childElementAttributes.get(childElementNames.get(k));
+                            for (int l = 0; l < childAttributes.size(); l++) {
+                                newChildElement.setAttribute(childAttributes.get(l), "attributeValue" + (l + 1));
+                            }
+                        }
+                        
+                        person.appendChild(newChildElement);
+                    }
                     break; // No need to continue searching
                 }
             }
