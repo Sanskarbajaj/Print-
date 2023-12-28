@@ -16,20 +16,19 @@ public class XMLUpdaterExample {
 
     public static void main(String[] args) {
         String filePath = "path/to/your/example.xml";
+        String parentName = "person";
+        int numberOfInstances = 3;
 
-        List<String> parentNames = Arrays.asList("person1", "person2");
-        List<String> parentAttributes = Arrays.asList("id1", "id2");
+        List<String> parentAttributes = Arrays.asList("id1", "id2", "id3");
         
         // Child elements and attributes for each parent
         Map<String, List<String>> childElementNames = new HashMap<>();
-        childElementNames.put("person1", Arrays.asList("child1", "child2"));
-        childElementNames.put("person2", Arrays.asList("child3", "child4"));
-
+        childElementNames.put(parentName, Arrays.asList("child1", "child2", "child3"));
+        
         Map<String, List<String>> childElementAttributes = new HashMap<>();
-        childElementAttributes.put("child1", Arrays.asList("attr1", "attr2"));
-        childElementAttributes.put("child2", Arrays.asList("attr3", "attr4"));
-        childElementAttributes.put("child3", Arrays.asList("attr5", "attr6"));
-        childElementAttributes.put("child4", Arrays.asList("attr7", "attr8"));
+        childElementAttributes.put("child1", Arrays.asList("attr1", "attr2", "attr3"));
+        childElementAttributes.put("child2", Arrays.asList("attr4", "attr5", "attr6"));
+        childElementAttributes.put("child3", Arrays.asList("attr7", "attr8", "attr9"));
 
         try {
             File xmlFile = new File(filePath);
@@ -37,15 +36,15 @@ public class XMLUpdaterExample {
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
             Document doc = docBuilder.parse(xmlFile);
 
-            // Create parent elements with attributes
-            for (int i = 0; i < parentNames.size(); i++) {
-                Element parentElement = doc.createElement(parentNames.get(i));
+            // Create parent elements with attributes and child elements
+            for (int i = 0; i < numberOfInstances; i++) {
+                Element parentElement = doc.createElement(parentName);
                 parentElement.setAttribute("id", parentAttributes.get(i));
 
                 // Create child elements and attributes for each parent
-                if (childElementNames.containsKey(parentNames.get(i))) {
-                    List<String> childNames = childElementNames.get(parentNames.get(i));
-                    List<String> childAttrs = childElementAttributes.get(parentNames.get(i));
+                if (childElementNames.containsKey(parentName)) {
+                    List<String> childNames = childElementNames.get(parentName);
+                    List<String> childAttrs = childElementAttributes.get(childNames.get(0)); // Assuming attributes are the same for all child elements
 
                     for (int j = 0; j < childNames.size(); j++) {
                         Element childElement = doc.createElement(childNames.get(j));
