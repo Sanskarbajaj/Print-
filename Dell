@@ -1,0 +1,43 @@
+import org.w3c.dom.*;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.File;
+
+public class XMLUpdaterExample {
+
+    public static void main(String[] args) {
+        String filePath = "path/to/your/example.xml";
+
+        try {
+            File xmlFile = new File(filePath);
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+            Document doc = docBuilder.parse(xmlFile);
+
+            // Remove all <person> elements
+            NodeList personList = doc.getElementsByTagName("person");
+            for (int i = personList.getLength() - 1; i >= 0; i--) {
+                Node person = personList.item(i);
+                Node parent = person.getParentNode();
+                parent.removeChild(person);
+            }
+
+            // Save the changes back to the XML file
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(doc);
+            StreamResult result = new StreamResult(xmlFile);
+            transformer.transform(source, result);
+
+            System.out.println("XML file updated successfully!");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
