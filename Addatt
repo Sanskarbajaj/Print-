@@ -1,0 +1,103 @@
+import org.w3c.dom.*;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.File;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class XMLUpdaterExample {
+
+    public static void main(String[] args) {
+        String filePath = "path/to/your/example.xml";
+        String parentName = "person";
+        int numberOfInstances = 3;
+
+        // Different attributes for each parent instance
+        List<String> parentAttributes1 = Arrays.asList("id1", "name1", "age1");
+        List<String> parentAttributes2 = Arrays.asList("id2", "name2", "age2");
+        List<String> parentAttributes3 = Arrays.asList("id3", "name3", "age3");
+
+        // Child elements and attributes for each parent
+        Map<String, List<String>> childElementNames = new HashMap<>();
+        childElementNames.put(parentName, Arrays.asList("child1", "child2", "child3"));
+
+        Map<String, List<String>> childElementAttributes = new HashMap<>();
+        childElementAttributes.put("child1", Arrays.asList("attr1", "attr2", "attr3"));
+        childElementAttributes.put("child2", Arrays.asList("attr4", "attr5", "attr6"));
+        childElementAttributes.put("child3", Arrays.asList("attr7", "attr8", "attr9"));
+
+        try {
+            File xmlFile = new File(filePath);
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+            Document doc = docBuilder.parse(xmlFile);
+
+            // Create parent elements with different attributes and child elements
+            for (int i = 0; i < numberOfInstances; i++) {
+                Element parentElement = doc.createElement(parentName);
+                List<String> currentParentAttributes;
+
+                // Select the appropriate set of attributes based on the loop iteration
+                switch (i) {
+                    case 0:
+                        currentParentAttributes = parentAttributes1;
+                        break;
+                    case 1:
+                        currentParentAttributes = parentAttributes2;
+                        break;
+                    case 2:
+                        currentParentAttributes = parentAttributes3;
+                        break;
+                    default:
+                        currentParentAttributes = parentAttributes1;
+                        break;
+                }
+
+                // Set attributes for the parent element
+                for (int j = 0; j < currentParentAttributes.size(); j++) {
+                    parentElement.setAttribute("attribute" + (j + 1), currentParentAttributes.get(j));
+                }
+
+                // Create child elements and attributes for each parent
+                if (childElementNames.containsKey(parentName)) {
+                    List<String> childNames = childElementNames.get(parentName);
+                    for (String childName : childNames) {
+                        Element childElement = doc.createElement(childName);
+
+                        // Add attributes for child elements
+                        List<String> childAttrs = childElementAttributes.get(childName);
+                        if (childAttrs != null) {
+                            for (int k = 0; k < childAttrs.size(); k++) {
+                                childElement.setAttribute("attr" + (k + 1), childAttrs.get(k));
+                            }
+                        }
+
+                        parentElement.appendChild(childElement);
+                    }
+                }
+
+                // Append the parent element to the root
+                doc.getDocumentElement().appendChild(parentElement);
+            }
+
+            // Save the changes back to the XML file
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(doc);
+            StreamResult result = new StreamResult(xmlFile);
+            transformer.transform(source, result);
+
+            System.out.println("XML file updated successfully!");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
