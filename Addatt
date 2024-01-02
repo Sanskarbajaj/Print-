@@ -28,10 +28,20 @@ public class XMLUpdaterExample {
         Map<String, List<String>> childElementNames = new HashMap<>();
         childElementNames.put(parentName, Arrays.asList("child1", "child2", "child3"));
 
-        Map<String, List<String>> childElementAttributes = new HashMap<>();
-        childElementAttributes.put("child1", Arrays.asList("attr1", "attr2", "attr3"));
-        childElementAttributes.put("child2", Arrays.asList("attr4", "attr5", "attr6"));
-        childElementAttributes.put("child3", Arrays.asList("attr7", "attr8", "attr9"));
+        Map<String, Map<String, List<String>>> childElementAttributes = new HashMap<>();
+
+        Map<String, List<String>> child1Attributes = new HashMap<>();
+        child1Attributes.put("attrA", Arrays.asList("valueA1", "valueA2", "valueA3"));
+
+        Map<String, List<String>> child2Attributes = new HashMap<>();
+        child2Attributes.put("attrB", Arrays.asList("valueB1", "valueB2", "valueB3"));
+
+        Map<String, List<String>> child3Attributes = new HashMap<>();
+        child3Attributes.put("attrC", Arrays.asList("valueC1", "valueC2", "valueC3"));
+
+        childElementAttributes.put("child1", child1Attributes);
+        childElementAttributes.put("child2", child2Attributes);
+        childElementAttributes.put("child3", child3Attributes);
 
         try {
             File xmlFile = new File(filePath);
@@ -62,7 +72,7 @@ public class XMLUpdaterExample {
 
                 // Set attributes for the parent element
                 for (int j = 0; j < currentParentAttributes.size(); j++) {
-                    parentElement.setAttribute("attribute" + (j + 1), currentParentAttributes.get(j));
+                    parentElement.setAttribute(currentParentAttributes.get(j), "value" + (j + 1));
                 }
 
                 // Create child elements and attributes for each parent
@@ -72,10 +82,18 @@ public class XMLUpdaterExample {
                         Element childElement = doc.createElement(childName);
 
                         // Add attributes for child elements
-                        List<String> childAttrs = childElementAttributes.get(childName);
-                        if (childAttrs != null) {
-                            for (int k = 0; k < childAttrs.size(); k++) {
-                                childElement.setAttribute("attr" + (k + 1), childAttrs.get(k));
+                        if (childElementAttributes.containsKey(childName)) {
+                            Map<String, List<String>> attributesMap = childElementAttributes.get(childName);
+                            if (attributesMap != null) {
+                                for (Map.Entry<String, List<String>> entry : attributesMap.entrySet()) {
+                                    String attrName = entry.getKey();
+                                    List<String> attrValues = entry.getValue();
+                                    if (attrValues != null) {
+                                        for (int k = 0; k < attrValues.size(); k++) {
+                                            childElement.setAttribute(attrName + (k + 1), attrValues.get(k));
+                                        }
+                                    }
+                                }
                             }
                         }
 
