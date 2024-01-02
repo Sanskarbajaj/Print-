@@ -31,13 +31,16 @@ public class XMLUpdaterExample {
         Map<String, Map<String, List<String>>> childElementAttributes = new HashMap<>();
 
         Map<String, List<String>> child1Attributes = new HashMap<>();
-        child1Attributes.put("attrA", Arrays.asList("valueA1", "valueA2", "valueA3"));
+        child1Attributes.put("name", Arrays.asList("John", "Jane", "Bob"));
+        child1Attributes.put("age", Arrays.asList("25", "30", "22"));
 
         Map<String, List<String>> child2Attributes = new HashMap<>();
-        child2Attributes.put("attrB", Arrays.asList("valueB1", "valueB2", "valueB3"));
+        child2Attributes.put("name", Arrays.asList("Alice", "Charlie", "David"));
+        child2Attributes.put("age", Arrays.asList("28", "35", "19"));
 
         Map<String, List<String>> child3Attributes = new HashMap<>();
-        child3Attributes.put("attrC", Arrays.asList("valueC1", "valueC2", "valueC3"));
+        child3Attributes.put("name", Arrays.asList("Eva", "Frank", "Grace"));
+        child3Attributes.put("age", Arrays.asList("33", "27", "40"));
 
         childElementAttributes.put("child1", child1Attributes);
         childElementAttributes.put("child2", child2Attributes);
@@ -90,7 +93,7 @@ public class XMLUpdaterExample {
                                     List<String> attrValues = entry.getValue();
                                     if (attrValues != null) {
                                         for (int k = 0; k < attrValues.size(); k++) {
-                                            childElement.setAttribute(attrName + (k + 1), attrValues.get(k));
+                                            childElement.setAttribute(attrName, attrValues.get(k));
                                         }
                                     }
                                 }
