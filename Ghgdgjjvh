@@ -1,10 +1,22 @@
 import subprocess
 import re
+import os
 
 def get_jdk_version(project_directory):
+    # Check if the project directory exists
+    if not os.path.exists(project_directory):
+        return f"Error: Project directory '{project_directory}' not found."
+
+    # Construct the path to the gradlew script in the project directory
+    gradlew_path = os.path.join(project_directory, "gradlew")
+
+    # Check if the gradlew script exists
+    if not os.path.exists(gradlew_path):
+        return f"Error: gradlew script not found in '{project_directory}'."
+
     try:
         # Run the Gradle properties command and capture the output
-        result = subprocess.run(["./gradlew", "properties"], capture_output=True, text=True, check=True, cwd=project_directory)
+        result = subprocess.run([gradlew_path, "properties"], capture_output=True, text=True, check=True, cwd=project_directory)
 
         # Extract JDK version using regular expressions
         jdk_version_match = re.search(r'Java version: (.+)', result.stdout)
@@ -19,7 +31,7 @@ def get_jdk_version(project_directory):
         # Handle command execution errors
         return f"Error: {e.stderr}"
 
-# Example usage:
-project_directory = "/path/to/your/project"
-jdk_version = get_jdk_version(project_directory)
+# Example usage with an absolute path
+absolute_path_to_project = "/path/to/your/project"
+jdk_version = get_jdk_version(absolute_path_to_project)
 print(f"JDK Version: {jdk_version}")
