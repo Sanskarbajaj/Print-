@@ -1,0 +1,12 @@
+# Read the contents of build.gradle file
+with open('build.gradle', 'r') as file:
+    lines = file.readlines()
+
+# Append the comment with a newline and one-line gap
+comment = '// Your comment goes here\n'
+lines.append('\n')  # One-line gap
+lines.append(comment)
+
+# Write the modified content back to build.gradle file
+with open('build.gradle', 'w') as file:
+    file.writelines(lines)
