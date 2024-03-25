@@ -84,3 +84,52 @@ gradle.projectsEvaluated {
 ```
 
 This approach directly creates and executes the `dependencyConvergence` task within the `projectsEvaluated` block. This should resolve the issue you're encountering. Let me know if it works or if you need further assistance!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+allprojects {
+    apply plugin: 'java' // Apply Java plugin to all projects, adjust if needed
+
+    // Configure Dependency Convergence Plugin
+    buildscript {
+        repositories {
+            mavenCentral()
+        }
+        dependencies {
+            classpath 'com.github.ben-manes:gradle-versions-plugin:0.39.0'
+        }
+    }
+    
+    apply plugin: 'com.github.ben-manes.versions' // Apply Dependency Convergence Plugin
+    
+    // Add task to generate dependency convergence report
+    task generateDependencyConvergenceReport(type: DependencyInsightReportTask) {
+        group = 'reporting'
+        description = 'Generates a report on dependency convergence'
+        outputFile = file("$buildDir/reports/dependency-convergence/report.txt")
+    }
+
+    // Add task to download dependency convergence report
+    task downloadDependencyConvergenceReport(type: Download) {
+        group = 'reporting'
+        description = 'Downloads dependency convergence report'
+        src 'file://<path_to_project>/build/reports/dependency-convergence/report.txt'
+        dest file("$buildDir/reports/dependency-convergence/")
+    }
+
+    // Make downloadDependencyConvergenceReport depend on generateDependencyConvergenceReport
+    downloadDependencyConvergenceReport.dependsOn generateDependencyConvergenceReport
+}
