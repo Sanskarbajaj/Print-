@@ -62,3 +62,25 @@ gradle.taskGraph.whenReady { graph ->
         tasks.dependencyConvergence.execute()
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+Let's try a different approach. We'll simplify the script further and directly execute the task after registering it:
+
+```groovy
+gradle.projectsEvaluated {
+    tasks.create('dependencyConvergence', DependencyConvergenceReportTask) {
+        outputFile = file("$buildDir/reports/dependency-convergence/report.txt")
+    }.execute()
+}
+```
+
+This approach directly creates and executes the `dependencyConvergence` task within the `projectsEvaluated` block. This should resolve the issue you're encountering. Let me know if it works or if you need further assistance!
