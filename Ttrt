@@ -1,0 +1,13 @@
+gradle.beforeProject { project ->
+    if (project == project.rootProject) {
+        project.allprojects {
+            plugins.withType(ResolutionRulesPlugin) {
+                rules.addDependencyConvergenceRule("dependencyConvergence", { DependencyConvergence.allVariants() })
+            }
+        }
+    }
+}
+
+tasks.register('dependencyConvergence', DependencyConvergenceReportTask) {
+    outputFile = file("$buildDir/reports/dependency-convergence/report.txt")
+}
