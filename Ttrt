@@ -11,3 +11,31 @@ gradle.beforeProject { project ->
 tasks.register('dependencyConvergence', DependencyConvergenceReportTask) {
     outputFile = file("$buildDir/reports/dependency-convergence/report.txt")
 }
+
+
+
+
+
+
+
+
+
+gradle.beforeProject { project ->
+    if (project == project.rootProject) {
+        project.subprojects {
+            plugins.withType(ResolutionRulesPlugin) {
+                rules.addDependencyConvergenceRule("dependencyConvergence", { DependencyConvergence.allVariants() })
+            }
+        }
+    }
+}
+
+gradle.taskGraph.whenReady { graph ->
+    if (graph.hasTask(":dependencyConvergence")) {
+        tasks.dependencyConvergence.execute()
+    }
+}
+
+tasks.register('dependencyConvergence', DependencyConvergenceReportTask) {
+    outputFile = file("$buildDir/reports/dependency-convergence/report.txt")
+}
