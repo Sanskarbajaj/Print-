@@ -133,3 +133,20 @@ allprojects {
     // Make downloadDependencyConvergenceReport depend on generateDependencyConvergenceReport
     downloadDependencyConvergenceReport.dependsOn generateDependencyConvergenceReport
 }
+
+
+
+
+
+
+
+
+gradle.afterProject { project ->
+    if (project == project.rootProject) {
+        project.subprojects {
+            task dependencyConvergence(type: DependencyConvergenceReportTask) {
+                outputFile = file("$buildDir/reports/dependency-convergence/report.txt")
+            }
+        }
+    }
+}
