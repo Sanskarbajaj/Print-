@@ -39,3 +39,26 @@ gradle.taskGraph.whenReady { graph ->
 tasks.register('dependencyConvergence', DependencyConvergenceReportTask) {
     outputFile = file("$buildDir/reports/dependency-convergence/report.txt")
 }
+
+
+
+
+
+
+
+
+
+
+
+
+gradle.projectsEvaluated {
+    tasks.register('dependencyConvergence', DependencyConvergenceReportTask) {
+        outputFile = file("$buildDir/reports/dependency-convergence/report.txt")
+    }
+}
+
+gradle.taskGraph.whenReady { graph ->
+    if (graph.hasTask(":dependencyConvergence")) {
+        tasks.dependencyConvergence.execute()
+    }
+}
