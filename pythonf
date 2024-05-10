@@ -1,6 +1,7 @@
 import csv
 import requests
 import json
+from datetime import datetime
 
 def make_api_call(user, repo_name, from_date):
     url = f"https://dev.azure.com/sc/git/{user}/commits/{repo_name}/{from_date}&api-version=1"
@@ -17,16 +18,28 @@ def make_api_call(user, repo_name, from_date):
         print(f"Failed to fetch commits for {repo_name}")
 
 def main():
-    csv_file = input("Enter the path to the CSV file: ")
-    user = input("Enter the Azure DevOps username: ")
-    from_date = input("Enter the from date (YYYY-MM-DD): ")
+    csv_file = input("Enter the path to the CSV file: ").strip()  # Remove leading/trailing whitespace
+    if not os.path.exists(csv_file):
+        print("Error: CSV file does not exist.")
+        return
+
+    user = input("Enter the Azure DevOps username: ").strip()
+    from_date_str = input("Enter the from date (DD/MM/YYYY hh:mm:ss AM/PM): ").strip()
+
+    try:
+        from_date = datetime.strptime(from_date_str, "%d/%m/%Y %I:%M:%S %p")
+    except ValueError:
+        print("Invalid date format. Please enter date in the format: DD/MM/YYYY hh:mm:ss AM/PM")
+        return
+    
+    from_date_iso = from_date.isoformat()
     
     with open(csv_file, 'r') as file:
         reader = csv.reader(file)
         next(reader)  # Skip header row
         for row in reader:
-            repo_name = row[0]  # Assuming repo name is in the first column
-            make_api_call(user, repo_name, from_date)
+            repo_name = row[0].strip()  # Assuming repo name is in the first column
+            make_api_call(user, repo_name, from_date_iso)
 
 if __name__ == "__main__":
     main()
