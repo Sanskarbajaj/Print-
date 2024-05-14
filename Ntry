@@ -1,0 +1,52 @@
+import csv
+import requests
+from datetime import datetime, timedelta
+
+# Azure DevOps organization URL and project name
+organization = 'your-organization'
+project = 'your-project'
+
+# Personal Access Token for authentication
+personal_access_token = 'your-personal-access-token'
+
+def get_last_build_date(repository_name):
+    # Get repository ID
+    repository_url = f'https://dev.azure.com/{organization}/{project}/_apis/git/repositories/{repository_name}?api-version=6.0'
+    repository_response = requests.get(repository_url, auth=('', personal_access_token))
+    repository_data = repository_response.json()
+    repository_id = repository_data['id']
+
+    # Get builds for the repository
+    builds_url = f'https://dev.azure.com/{organization}/{project}/_apis/build/builds?repositoryId={repository_id}&$top=1&api-version=6.0'
+    builds_response = requests.get(builds_url, auth=('', personal_access_token))
+    builds_data = builds_response.json()
+
+    # Extract last build date
+    if builds_data['count'] > 0:
+        last_build_date = builds_data['value'][0]['finishTime']
+        return datetime.strptime(last_build_date, "%Y-%m-%dT%H:%M:%S.%fZ")
+    else:
+        return None
+
+# Read repository names from CSV
+csv_filename = 'repositories.csv'
+
+with open(csv_filename, 'r') as file:
+    csv_reader = csv.reader(file)
+    next(csv_reader)  # Skip header
+    for row in csv_reader:
+        repository_name = row[0]
+        last_build_date = get_last_build_date(repository_name)
+
+        if last_build_date:
+            today = datetime.now()
+            one_year_ago = today - timedelta(days=365)
+            if last_build_date < one_year_ago:
+                status = "More than a year ago"
+            else:
+                status = "Less than a year ago"
+            with open('build_dates.txt', 'a') as output_file:
+                output_file.write(f"Repository: {repository_name}, Last Build Date: {last_build_date}, Status: {status}\n")
+        else:
+            with open('build_dates.txt', 'a') as output_file:
+                output_file.write(f"Repository: {repository_name}, Last Build Date: Not available\n")
