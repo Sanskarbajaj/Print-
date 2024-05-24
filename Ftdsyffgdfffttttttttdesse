@@ -1,0 +1,47 @@
+import requests
+
+def check_azure_pipelines_file(organization, project, repo_name, pat):
+    """
+    This function checks if a repository in Azure DevOps contains any file with "azure-pipelines" in its name.
+    
+    Parameters:
+    organization (str): The Azure DevOps organization name.
+    project (str): The Azure DevOps project name.
+    repo_name (str): The name of the repository to check.
+    pat (str): The Personal Access Token (PAT) for Azure DevOps.
+
+    Returns:
+    str: "Yes" if a file with "azure-pipelines" in its name is found, otherwise "No".
+    """
+    
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': f'Basic {pat}'
+    }
+
+    # Get the list of items in the repository
+    items_url = f"https://dev.azure.com/{organization}/{project}/_apis/git/repositories/{repo_name}/items?recursionLevel=Full&api-version=6.0"
+    response = requests.get(items_url, headers=headers)
+    
+    # Check for errors in the response
+    if response.status_code != 200:
+        raise Exception(f"Failed to retrieve repository items: {response.status_code} {response.text}")
+    
+    items_data = response.json()
+    
+    # Check if any item contains "azure-pipelines" in its path
+    for item in items_data.get('value', []):
+        if 'azure-pipelines' in item['path']:
+            return "Yes"
+    
+    return "No"
+
+# Example usage
+if __name__ == '__main__':
+    organization = 'your_organization'  # Replace with your Azure DevOps organization
+    project = 'your_project'  # Replace with your Azure DevOps project
+    repo_name = 'your_repo_name'  # Replace with your repository name
+    pat = 'your_pat'  # Replace with your Azure DevOps PAT (Base64 encoded)
+
+    result = check_azure_pipelines_file(organization, project, repo_name, pat)
+    print(f"Contains azure-pipelines file: {result}")
