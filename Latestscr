@@ -3,34 +3,36 @@ import requests
 from datetime import datetime
 
 def get_repo_details(organization, project, repo_name, pat):
-    url = f"https://dev.azure.com/{organization}/{project}/_apis/git/repositories/{repo_name}?api-version=6.0"
     headers = {
         'Content-Type': 'application/json',
         'Authorization': f'Basic {pat}'
     }
-    response = requests.get(url, headers=headers)
-    repo_data = response.json()
-    
-    repo_creation_date = repo_data['createdDate']
-    default_branch = repo_data['defaultBranch']
-    
+
     # Get the last commit details
     commits_url = f"https://dev.azure.com/{organization}/{project}/_apis/git/repositories/{repo_name}/commits?api-version=6.0"
     commits_response = requests.get(commits_url, headers=headers)
     commits_data = commits_response.json()
-    last_commit_date = commits_data['value'][0]['committer']['date'] if commits_data['value'] else 'N/A'
-    
+    if commits_data['value']:
+        last_commit = commits_data['value'][0]
+        last_commit_date = last_commit['committer']['date']
+        last_commit_author = last_commit['committer']['name']
+    else:
+        last_commit_date = 'N/A'
+        last_commit_author = 'N/A'
+
     # Get the last build details
     builds_url = f"https://dev.azure.com/{organization}/{project}/_apis/build/builds?definitions={repo_name}&$top=1&api-version=6.0"
     builds_response = requests.get(builds_url, headers=headers)
     builds_data = builds_response.json()
-    last_build_date = builds_data['value'][0]['finishTime'] if builds_data['value'] else 'N/A'
+    if builds_data['value']:
+        last_build_date = builds_data['value'][0]['finishTime']
+    else:
+        last_build_date = 'N/A'
 
     return {
         'repo_name': repo_name,
-        'branch_name': default_branch,
-        'repo_creation_date': repo_creation_date,
         'last_commit_date': last_commit_date,
+        'last_commit_author': last_commit_author,
         'last_build_date': last_build_date
     }
 
@@ -38,16 +40,15 @@ def process_repos(input_csv, output_csv, organization, project, pat):
     with open(input_csv, mode='r') as infile, open(output_csv, mode='w', newline='') as outfile:
         reader = csv.reader(infile)
         writer = csv.writer(outfile)
-        writer.writerow(['repo_name', 'branch_name', 'repo_creation_date', 'last_commit_date', 'last_build_date'])
-        
+        writer.writerow(['repo_name', 'last_commit_date', 'last_commit_author', 'last_build_date'])
+
         for row in reader:
             repo_name = row[0]
             repo_details = get_repo_details(organization, project, repo_name, pat)
             writer.writerow([
                 repo_details['repo_name'],
-                repo_details['branch_name'],
-                repo_details['repo_creation_date'],
                 repo_details['last_commit_date'],
+                repo_details['last_commit_author'],
                 repo_details['last_build_date']
             ])
 
