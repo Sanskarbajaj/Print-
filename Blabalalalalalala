@@ -1,6 +1,18 @@
 import requests
 import yaml
 
+def fetch_root_files_from_ado(repo_name, organization, project, personal_access_token):
+    # Define the URL for the repository root items API
+    url = f"https://dev.azure.com/{organization}/{project}/_apis/git/repositories/{repo_name}/items?scopePath=/&recursionLevel=OneLevel&api-version=6.0"
+    
+    # Make a GET request to fetch the items in the root
+    response = requests.get(url, auth=('', personal_access_token))
+    
+    if response.status_code == 200:
+        return response.json()
+    else:
+        response.raise_for_status()
+
 def fetch_file_from_ado(repo_name, file_path, organization, project, personal_access_token):
     # Define the URL for the file fetch API
     url = f"https://dev.azure.com/{organization}/{project}/_apis/git/repositories/{repo_name}/items?path={file_path}&api-version=6.0"
@@ -29,17 +41,23 @@ def check_yaml_content(yaml_content):
 
 def main():
     repo_name = input("Enter the repository name: ")
-    file_path = input("Enter the path to the YAML file: ")
     organization = input("Enter your Azure DevOps organization: ")
     project = input("Enter your Azure DevOps project: ")
     personal_access_token = input("Enter your personal access token: ")
     
-    yaml_content = fetch_file_from_ado(repo_name, file_path, organization, project, personal_access_token)
+    root_files = fetch_root_files_from_ado(repo_name, organization, project, personal_access_token)
     
-    if check_yaml_content(yaml_content):
-        print("The YAML file contains the 'extends.template' attribute with 'governed-template' in its value.")
+    azure_pipelines_yml = next((item for item in root_files['value'] if item['path'] == '/azure-pipelines.yml'), None)
+    
+    if azure_pipelines_yml:
+        yaml_content = fetch_file_from_ado(repo_name, azure_pipelines_yml['path'], organization, project, personal_access_token)
+        
+        if check_yaml_content(yaml_content):
+            print("The YAML file contains the 'extends.template' attribute with 'governed-template' in its value.")
+        else:
+            print("The YAML file does not contain the 'extends.template' attribute with 'governed-template' in its value.")
     else:
-        print("The YAML file does not contain the 'extends.template' attribute with 'governed-template' in its value.")
+        print("The 'azure-pipelines.yml' file was not found in the root of the repository.")
 
 if __name__ == "__main__":
     main()
