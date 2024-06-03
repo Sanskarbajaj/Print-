@@ -1,0 +1,52 @@
+import requests
+from requests.auth import HTTPBasicAuth
+
+def get_first_commit_date(organization, project, repo_name, pat):
+    """
+    Get the date of the first commit for a given Azure DevOps repository.
+
+    Parameters:
+    organization (str): The name of the Azure DevOps organization.
+    project (str): The name of the project.
+    repo_name (str): The name of the repository.
+    pat (str): The Personal Access Token for Azure DevOps.
+
+    Returns:
+    str: The date of the first commit in ISO 8601 format.
+    """
+    # Construct the URL for the commits API
+    url = f'https://dev.azure.com/{organization}/{project}/_apis/git/repositories/{repo_name}/commits'
+    
+    # Set the API version
+    params = {
+        'api-version': '6.0',
+        '$top': 1,  # Get only the first commit
+        '$orderby': 'date asc'  # Order by date ascending
+    }
+    
+    # Authenticate using PAT
+    auth = HTTPBasicAuth('', pat)
+    
+    response = requests.get(url, params=params, auth=auth)
+    
+    # Check if the request was successful
+    if response.status_code != 200:
+        raise Exception(f"Error: Unable to fetch commits for {repo_name}, status code: {response.status_code}, message: {response.json()}")
+    
+    commits = response.json().get('value', [])
+    
+    if not commits:
+        raise Exception(f"No commits found for repository {repo_name}")
+    
+    # Get the date of the first commit
+    first_commit_date = commits[0]['committer']['date']
+    
+    return first_commit_date
+
+# Example usage
+organization = 'your_organization'  # Replace with your organization name
+project = 'your_project'  # Replace with your project name
+repo_name = 'your_repo'  # Replace with your repository name
+pat = 'your_pat'  # Replace with your Personal Access Token
+
+print(get_first_commit_date(organization, project, repo_name, pat))
