@@ -1,0 +1,68 @@
+import { LitElement, html, css } from 'lit';
+import { property } from 'lit/decorators.js';
+
+class MyLitApp extends LitElement {
+  static styles = css`
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+    .sidebar {
+      width: 20%;
+      background-color: #f0f0f0;
+      padding: 10px;
+    }
+    .main {
+      width: 80%;
+      padding: 10px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .cases {
+      margin-top: 20px;
+    }
+    .case {
+      margin: 5px 0;
+    }
+    .add-button {
+      cursor: pointer;
+      font-size: 24px;
+      padding: 5px;
+    }
+  `;
+
+  @property({ type: Array })
+  cases = [
+    { id: 1, name: 'Case 1' },
+    { id: 2, name: 'Case 2' },
+    { id: 3, name: 'Case 3' },
+    { id: 4, name: 'Case 4' },
+    { id: 5, name: 'Case 5' },
+  ];
+
+  render() {
+    return html`
+      <div class="container">
+        <div class="sidebar">
+          <h2>My Cases</h2>
+        </div>
+        <div class="main">
+          <div class="header">
+            <h2>CASA</h2>
+            <div class="add-button">+</div>
+          </div>
+          <div class="cases">
+            ${this.cases.map(
+              (caseItem) => html`<div class="case">${caseItem.name}</div>`
+            )}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+}
+
+customElements.define('my-lit-app', MyLitApp);
