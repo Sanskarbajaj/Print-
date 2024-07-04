@@ -114,4 +114,69 @@ class NewCaseForm extends LitElement {
   <initial-screen></initial-screen>
 </body>
 </html>
+-------------
+import { LitElement, html, css } from 'lit';
+import { customElement } from 'lit/decorators.js';
 
+@customElement('new-case-form')
+class NewCaseForm extends LitElement {
+  static styles = css`
+    div {
+      display: flex;
+      flex-direction: column;
+      width: 300px;
+      margin: auto;
+    }
+    label {
+      margin: 10px 0 5px;
+    }
+    input, select, button {
+      padding: 10px;
+      margin: 5px 0;
+    }
+    button {
+      font-size: 16px;
+    }
+  `;
+
+  render() {
+    return html`
+      <div>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="age">Age:</label>
+        <input type="number" id="age" name="age" required>
+
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender" required>
+          <option value="">Select</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other</option>
+        </select>
+
+        <button @click="${this._handleSubmit}">Submit</button>
+        <button @click="${this._handleBack}">Back</button>
+      </div>
+    `;
+  }
+
+  _handleSubmit() {
+    const name = this.shadowRoot.getElementById('name').value;
+    const age = this.shadowRoot.getElementById('age').value;
+    const gender = this.shadowRoot.getElementById('gender').value;
+
+    if (name && age && gender) {
+      const data = { name, age, gender };
+      this.dispatchEvent(new CustomEvent('submit-case', { detail: data, bubbles: true, composed: true }));
+      this._handleBack();
+    } else {
+      alert('Please fill in all fields.');
+    }
+  }
+
+  _handleBack() {
+    this.dispatchEvent(new CustomEvent('back', { bubbles: true, composed: true }));
+  }
+}
