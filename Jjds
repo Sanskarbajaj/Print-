@@ -32,3 +32,38 @@
         status: "Pending"
     }
 ]
+import { LitElement, html } from 'lit';
+
+class ScTableWrapper extends LitElement {
+  static properties = {
+    headers: { type: Array },
+    data: { type: Array }
+  };
+
+  constructor() {
+    super();
+    this.headers = [];
+    this.data = [];
+  }
+
+  getTransformedData(data) {
+    return data.map(item => {
+      const transformedItem = { ...item };
+      if (transformedItem.id) {
+        transformedItem.id = html`<a href="/case/${transformedItem.id}">${transformedItem.id}</a>`;
+      }
+      return transformedItem;
+    });
+  }
+
+  render() {
+    return html`
+      <sc-table
+        .headers=${this.headers}
+        .data=${this.getTransformedData(this.data)}
+      ></sc-table>
+    `;
+  }
+}
+
+customElements.define('sc-table-wrapper', ScTableWrapper);
