@@ -1,0 +1,26 @@
+[
+    {
+        "case_id": "C12345",
+        "client_leid": "L56789",
+        "client_name": "John Doe",
+        "requested_by": "Jane Smith",
+        "created_on": "2024-07-07",
+        "status": "Open"
+    },
+    {
+        "case_id": "C12346",
+        "client_leid": "L56790",
+        "client_name": "Alice Johnson",
+        "requested_by": "Bob Brown",
+        "created_on": "2024-07-06",
+        "status": "Closed"
+    },
+    {
+        "case_id": "C12347",
+        "client_leid": "L56791",
+        "client_name": "Michael White",
+        "requested_by": "Charlie Black",
+        "created_on": "2024-07-05",
+        "status": "Pending"
+    }
+]
