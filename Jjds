@@ -67,3 +67,43 @@ class ScTableWrapper extends LitElement {
 }
 
 customElements.define('sc-table-wrapper', ScTableWrapper);
+
+
+import { LitElement, html, css } from 'lit';
+
+class FileDownloader extends LitElement {
+  static properties = {
+    files: { type: Array }
+  };
+
+  constructor() {
+    super();
+    this.files = [];
+  }
+
+  handleFileInput(e) {
+    this.files = Array.from(e.target.files);
+  }
+
+  downloadFiles() {
+    this.files.forEach(file => {
+      const url = URL.createObjectURL(file);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = file.name;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  }
+
+  render() {
+    return html`
+      <div>
+        <input type="file" multiple @change=${this.handleFileInput} />
+        <button @click=${this.downloadFiles}>Download Files</button>
+      </div>
+    `;
+  }
+}
+
+customElements.define('file-downloader', FileDownloader);
