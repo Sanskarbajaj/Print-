@@ -107,3 +107,23 @@ class FileDownloader extends LitElement {
 }
 
 customElements.define('file-downloader', FileDownloader);
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Email Example</title>
+    <script>
+        function openMail() {
+            const recipient = "example@example.com";
+            const subject = "Your Subject Here";
+            const body = "Your email body here.";
+            
+            const mailtoLink = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.location.href = mailtoLink;
+        }
+    </script>
+</head>
+<body>
+    <button onclick="openMail()">Send Email</button>
+</body>
+</html>
