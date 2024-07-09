@@ -127,3 +127,37 @@ customElements.define('file-downloader', FileDownloader);
     <button onclick="openMail()">Send Email</button>
 </body>
 </html>
+
+import { LitElement, html, css, property, customElement } from 'lit-element';
+
+@customElement('file-upload-component')
+export class FileUploadComponent extends LitElement {
+  @property({ type: String }) statusMessage: string = '';
+
+  static styles = css`
+    .status-message {
+      margin-top: 10px;
+      font-size: 14px;
+      color: red;
+    }
+  `;
+
+  handleFileUpload() {
+    const fileInput = this.shadowRoot!.querySelector('#fileInput') as HTMLInputElement;
+    if (!fileInput.files || fileInput.files.length === 0) {
+      this.statusMessage = 'Nothing to attach';
+    } else {
+      this.statusMessage = 'Uploaded successfully';
+    }
+  }
+
+  render() {
+    return html`
+      <div>
+        <input type="file" id="fileInput" />
+        <button @click=${this.handleFileUpload}>Upload</button>
+        <div class="status-message">${this.statusMessage}</div>
+      </div>
+    `;
+  }
+}
