@@ -1,1 +1,9 @@
+server.port=8443
+server.ssl.key-store=classpath:keystore.p12
+server.ssl.key-store-password=your-password
+server.ssl.key-store-type=PKCS12
+server.ssl.key-alias=myalias
+
+
+
 keytool -genkeypair -alias myalias -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore keystore.p12 -validity 3650
