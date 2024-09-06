@@ -100,3 +100,58 @@ public void testGetCorporateLimits() {
     verify(tradeClient, times(1)).getCorporateLimits(countryCode, custId);
     assertEquals(1, result.size()); // Make sure the list has one item (as we added only one mockDetail)
 }
+
+
+
+
+
+
+
+
+import io.quarkus.test.junit.QuarkusTest;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@QuarkusTest
+public class TradeQueryServiceTest {
+
+    @InjectMocks
+    TradeQueryService tradeQueryService;
+
+    @Mock
+    DevkitTradeFinanceApiClient tradeClient;
+
+    @Test
+    public void testGetCorporateLimits() {
+        // Setup mock data
+        String countryCode = "US";
+        String custId = "123";
+
+        // Mock the details and limit objects
+        TradeCorporateLimit.CorporateLimitDetail mockDetail = mock(TradeCorporateLimit.CorporateLimitDetail.class);
+        List<TradeCorporateLimit.CorporateLimitDetail> mockDetails = new ArrayList<>();
+        mockDetails.add(mockDetail);
+
+        TradeCorporateLimit mockLimit = mock(TradeCorporateLimit.class);
+        when(mockLimit.corporateLimitDetails()).thenReturn(mockDetails);
+
+        // Mock the behavior of tradeClient to return the mock limit
+        when(tradeClient.getCorporateLimits(countryCode, custId)).thenReturn(mockLimit);
+
+        // Call the method under test
+        List<TradeCorporateLimitItem> result = tradeQueryService.getCorporateLimits(countryCode, custId);
+
+        // Basic assertions
+        assertNotNull(result);
+        assertEquals(1, result.size()); // Should return one item
+
+        // Verify that the tradeClient's method was called once
+        verify(tradeClient, times(1)).getCorporateLimits(countryCode, custId);
+    }
+}
