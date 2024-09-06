@@ -62,3 +62,41 @@ public class TradeQueryServiceTest {
         assertTrue(result.isEmpty());
     }
 }
+
+
+
+
+
+
+
+
+
+
+@Test
+public void testGetCorporateLimits() {
+    // Setup mock data for countryCode and custId
+    String countryCode = "US"; // You can change this to any valid country code your service expects
+    String custId = "123";     // Mock customer ID
+
+    // Create mock corporate limit details
+    TradeCorporateLimit.CorporateLimitDetail mockDetail = new TradeCorporateLimit.CorporateLimitDetail();
+    // Set necessary properties for the mockDetail (e.g., limits, details, etc.)
+    
+    List<TradeCorporateLimit.CorporateLimitDetail> mockDetails = new ArrayList<>();
+    mockDetails.add(mockDetail);
+
+    // Create the mock TradeCorporateLimit object and set the details
+    TradeCorporateLimit mockLimit = new TradeCorporateLimit();
+    mockLimit.setCorporateLimitDetails(mockDetails);
+
+    // Mock the behavior of the trade client to return the mock corporate limit
+    when(tradeClient.getCorporateLimits(countryCode, custId)).thenReturn(mockLimit);
+
+    // Execute the method under test
+    List<TradeCorporateLimitItem> result = tradeQueryService.getCorporateLimits(countryCode, custId);
+
+    // Verify the results
+    assertNotNull(result);
+    verify(tradeClient, times(1)).getCorporateLimits(countryCode, custId);
+    assertEquals(1, result.size()); // Make sure the list has one item (as we added only one mockDetail)
+}
