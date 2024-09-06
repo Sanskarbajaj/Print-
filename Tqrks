@@ -1,0 +1,64 @@
+import io.quarkus.test.junit.QuarkusTest;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Mockito;
+import javax.inject.Inject;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+import java.util.ArrayList;
+import java.util.List;
+
+@QuarkusTest
+public class TradeQueryServiceTest {
+
+    @InjectMocks
+    TradeQueryService tradeQueryService;
+
+    @Mock
+    DevkitTradeFinanceApiClient tradeClient;
+
+    @BeforeEach
+    void setup() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    public void testGetCorporateLimits() {
+        // Setup mock data
+        String countryCode = "US";
+        String custId = "123";
+
+        TradeCorporateLimit mockLimit = new TradeCorporateLimit();
+        mockLimit.setCorporateLimitDetails(new ArrayList<>());
+        when(tradeClient.getCorporateLimits(countryCode, custId)).thenReturn(mockLimit);
+
+        // Execute the method under test
+        List<TradeCorporateLimitItem> result = tradeQueryService.getCorporateLimits(countryCode, custId);
+
+        // Verify the results
+        assertNotNull(result);
+        verify(tradeClient, times(1)).getCorporateLimits(countryCode, custId);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testGetBankLimits() {
+        // Setup mock data
+        String bankId = "456";
+
+        TradeBankLimit mockBankLimit = new TradeBankLimit();
+        mockBankLimit.setBankLimitDetails(new ArrayList<>());
+        when(tradeClient.getBankLimits(bankId)).thenReturn(mockBankLimit);
+
+        // Execute the method under test
+        List<TradeBankLimitItem> result = tradeQueryService.getBankLimits(bankId);
+
+        // Verify the results
+        assertNotNull(result);
+        verify(tradeClient, times(1)).getBankLimits(bankId);
+        assertTrue(result.isEmpty());
+    }
+}
