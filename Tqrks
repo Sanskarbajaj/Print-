@@ -412,3 +412,98 @@ public class TradeQueryServiceTest {
         verify(tradeClient, times(1)).getBankLimits(bankId);  // Verify the tradeClient was called
     }
 }
+
+
+
+
+
+
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+public class TradeQueryServiceTest {
+
+    private TradeQueryService tradeQueryService;
+
+    @Mock
+    private DevkitTradeFinanceApiClient mockClient;  // Mock the RestClient
+
+    @BeforeEach
+    public void setUp() {
+        // Initialize Mockito annotations
+        MockitoAnnotations.openMocks(this);
+
+        // Initialize the TradeQueryService
+        tradeQueryService = new TradeQueryService();
+    }
+
+    @Test
+    public void testGetCorporateLimits() {
+        // Arrange
+        String countryCode = "US";
+        String custId = "123";
+
+        // Create a mock CorporateLimitDetail and list
+        TradeCorporateLimit.CorporateLimitDetail mockDetail = mock(TradeCorporateLimit.CorporateLimitDetail.class);
+        List<TradeCorporateLimit.CorporateLimitDetail> mockDetails = new ArrayList<>();
+        mockDetails.add(mockDetail);
+
+        // Mock the TradeCorporateLimit object
+        TradeCorporateLimit mockLimit = mock(TradeCorporateLimit.class);
+        when(mockLimit.corporateLimitDetails()).thenReturn(mockDetails);
+
+        // Mock the RestClient (tradeClient) behavior inside the method
+        when(mockClient.getCorporateLimits(countryCode, custId)).thenReturn(mockLimit);
+
+        // Replace the creation of DevkitTradeFinanceApiClient with the mock
+        DevkitTradeFinanceApiClient clientSpy = spy(DevkitTradeFinanceApiClient.class);
+        doReturn(mockClient).when(clientSpy).getCorporateLimits(anyString(), anyString());
+
+        // Act
+        List<TradeCorporateLimitItem> result = tradeQueryService.getCorporateLimits(countryCode, custId);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1, result.size());  // The result should have one item
+        verify(mockClient, times(1)).getCorporateLimits(countryCode, custId);  // Verify the tradeClient was called
+    }
+
+    @Test
+    public void testGetBankLimits() {
+        // Arrange
+        String bankId = "ABC123";
+
+        // Create a mock BankLimitDetail and list
+        TradeBankLimit.BankLimitDetail mockBankDetail = mock(TradeBankLimit.BankLimitDetail.class);
+        List<TradeBankLimit.BankLimitDetail> mockBankDetails = new ArrayList<>();
+        mockBankDetails.add(mockBankDetail);
+
+        // Mock the TradeBankLimit object
+        TradeBankLimit mockBankLimit = mock(TradeBankLimit.class);
+        when(mockBankLimit.bankLimitDetails()).thenReturn(mockBankDetails);
+
+        // Mock the RestClient (tradeClient) behavior inside the method
+        when(mockClient.getBankLimits(bankId)).thenReturn(mockBankLimit);
+
+        // Replace the creation of DevkitTradeFinanceApiClient with the mock
+        DevkitTradeFinanceApiClient clientSpy = spy(DevkitTradeFinanceApiClient.class);
+        doReturn(mockClient).when(clientSpy).getBankLimits(anyString());
+
+        // Act
+        List<TradeBankLimitItem> result = tradeQueryService.getBankLimits(bankId);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1, result.size());  // The result should have one item
+        verify(mockClient, times(1)).getBankLimits(bankId);  // Verify the tradeClient was called
+    }
+}
