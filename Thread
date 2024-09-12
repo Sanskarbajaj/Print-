@@ -287,3 +287,186 @@ public class YamlReader {
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.constructor.Constructor;
+
+import java.io.InputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+public class YamlReader {
+
+    public static void main(String[] args) {
+        Yaml yaml = new Yaml(new Constructor(Map.class));
+        try (InputStream inputStream = YamlReader.class.getClassLoader().getResourceAsStream("config.yaml")) {
+
+            // Parse the YAML file
+            Map<String, Object> yamlData = yaml.load(inputStream);
+
+            // Read version, target
+            String version = yamlData.get("version").toString();
+            String target = yamlData.get("target").toString();
+
+            // Output version and target to confirm
+            System.out.println("Version: " + version);
+            System.out.println("Target: " + target);
+
+            // Read instances
+            List<Map<String, Object>> instances = (List<Map<String, Object>>) yamlData.get("instances");
+
+            // Loop through instances sequentially
+            for (Map<String, Object> instance : instances) {
+                System.out.println("Processing new instance...");
+
+                // Read the JDBC information for the current instance
+                String jdbcUrl = instance.get("jdbc_url").toString();
+                String username = instance.get("username").toString();
+                String password = instance.get("password").toString();
+
+                // Create a thread pool with a fixed number of threads
+                ExecutorService executorService = Executors.newFixedThreadPool(10);  // Adjust the number of threads as needed
+
+                // Create tasks for each enumeration item to connect to the DB schema in parallel
+                List<Map<String, String>> enumerations = (List<Map<String, String>>) instance.get("enumeration");
+                for (Map<String, String> enumItem : enumerations) {
+                    String schemaName = enumItem.get("name");
+
+                    executorService.submit(() -> {
+                        try {
+                            connectToDatabase(jdbcUrl, username, password, schemaName);
+                        } catch (SQLException e) {
+                            System.err.println("Failed to connect to schema: " + schemaName + " in instance: " + jdbcUrl);
+                            e.printStackTrace();
+                        }
+                    });
+                }
+
+                // Shutdown the ExecutorService after submitting all tasks
+                executorService.shutdown();
+
+                // Wait for all tasks in this instance to complete before moving to the next instance
+                try {
+                    if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) {
+                        executorService.shutdownNow();
+                    }
+                } catch (InterruptedException e) {
+                    executorService.shutdownNow();
+                    Thread.currentThread().interrupt();
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Generate a dummy YAML file
+        generateDummyYaml();
+    }
+
+    // Method to connect to the database with a specific schema
+    public static void connectToDatabase(String jdbcUrl, String username, String password, String schemaName) throws SQLException {
+        // Append the schema to the JDBC URL if needed for the specific database
+        String connectionUrl = jdbcUrl + "?currentSchema=" + schemaName;
+
+        // Try to establish a connection
+        try (Connection connection = DriverManager.getConnection(connectionUrl, username, password)) {
+            System.out.println("Connected to schema: " + schemaName + " using thread: " + Thread.currentThread().getName());
+        } catch (SQLException e) {
+            throw new SQLException("Error connecting to schema: " + schemaName, e);
+        }
+    }
+
+    public static void generateDummyYaml() {
+        Yaml yaml = new Yaml();
+        Map<String, Object> data = Map.of(
+                "version", "1.0",
+                "target", "staging",
+                "instances", List.of(
+                        Map.of(
+                                "jdbc_url", "jdbc:postgresql://localhost:5432/mydb",
+                                "username", "user",
+                                "password", "password",
+                                "enumeration", List.of(
+                                        Map.of("name", "schema1"),
+                                        Map.of("name", "schema2")
+                                )
+                        ),
+                        Map.of(
+                                "jdbc_url", "jdbc:oracle:thin:@localhost:1521:xe",
+                                "username", "oracleuser",
+                                "password", "oraclepassword",
+                                "enumeration", List.of(
+                                        Map.of("name", "schemaA"),
+                                        Map.of("name", "schemaB")
+                                )
+                        )
+                )
+        );
+
+        DumperOptions options = new DumperOptions();
+        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+
+        Yaml yamlDumper = new Yaml(options);
+
+        try (FileWriter writer = new FileWriter("dummy.yaml")) {
+            yamlDumper.dump(data, writer);
+            System.out.println("Dummy YAML file generated.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+
+
+
+
+
+
+version: "1.0"
+target: "production"
+instances:
+  - jdbc_url: "jdbc:postgresql://localhost:5432/mydb"
+    username: "postgres"
+    password: "password"
+    enumeration:
+      - name: "schema1"
+      - name: "schema2"
+      - name: "schema3"
+  - jdbc_url: "jdbc:oracle:thin:@localhost:1521:xe"
+    username: "oracleuser"
+    password: "oraclepassword"
+    enumeration:
+      - name: "schemaA"
+      - name: "schemaB"
+
+
+
+
+
