@@ -1,0 +1,92 @@
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.constructor.Constructor;
+
+import java.io.InputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+public class YamlReader {
+
+    public static void main(String[] args) {
+        Yaml yaml = new Yaml(new Constructor(Map.class));
+        try (InputStream inputStream = YamlReader.class.getClassLoader().getResourceAsStream("config.yaml")) {
+
+            // Parse the YAML file
+            Map<String, Object> yamlData = yaml.load(inputStream);
+
+            // Read version, target
+            String version = (String) yamlData.get("version");
+            String target = (String) yamlData.get("target");
+
+            // Read instances
+            List<Map<String, Object>> instances = (List<Map<String, Object>>) yamlData.get("instances");
+
+            // Loop through instances and print names
+            for (Map<String, Object> instance : instances) {
+                List<Map<String, String>> enumerations = (List<Map<String, String>>) instance.get("enumeration");
+                for (Map<String, String> enumItem : enumerations) {
+                    System.out.println("Instance name: " + enumItem.get("name"));
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Generate a dummy YAML file
+        generateDummyYaml();
+    }
+
+    public static void generateDummyYaml() {
+        Yaml yaml = new Yaml();
+        Map<String, Object> data = Map.of(
+                "version", "1.0",
+                "target", "staging",
+                "instances", List.of(
+                        Map.of("enumeration", List.of(
+                                Map.of("name", "dummy1"),
+                                Map.of("name", "dummy2")
+                        )),
+                        Map.of("enumeration", List.of(
+                                Map.of("name", "dummy3"),
+                                Map.of("name", "dummy4")
+                        ))
+                )
+        );
+
+        DumperOptions options = new DumperOptions();
+        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+
+        Yaml yamlDumper = new Yaml(options);
+
+        try (FileWriter writer = new FileWriter("dummy.yaml")) {
+            yamlDumper.dump(data, writer);
+            System.out.println("Dummy YAML file generated.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+version: 1.0
+target: production
+instances:
+  - enumeration:
+      - name: instance1
+      - name: instance2
+  - enumeration:
+      - name: instance3
+      - name: instance4
+
+
+
+<dependency>
+    <groupId>org.yaml</groupId>
+    <artifactId>snakeyaml</artifactId>
+    <version>2.0</version>
+</dependency>
+
