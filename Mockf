@@ -1,0 +1,38 @@
+import { util } from './your-utility-file'; // import the fetchData utility
+
+describe('fetchData', () => {
+  let graphqlClientMock;
+
+  beforeEach(() => {
+    // Reset mocks before each test
+    graphqlClientMock = {
+      query: jest.fn(),  // Mock the query function
+    };
+  });
+
+  it('should fetch data successfully', async () => {
+    const mockQuery = 'query { user(id: "1") { id, name } }';
+    const mockResponse = { data: { user: { id: '1', name: 'John Doe' } } };
+
+    // Mock the query method to return the mockResponse
+    graphqlClientMock.query.mockResolvedValue(mockResponse);
+
+    // Call the fetchData function
+    const result = await util.fetchData(graphqlClientMock, mockQuery);
+
+    // Assertions
+    expect(result).toEqual(mockResponse); // Ensure the result matches the mock response
+    expect(graphqlClientMock.query).toHaveBeenCalledWith(mockQuery); // Ensure the query was called with the correct arguments
+  });
+
+  it('should handle errors', async () => {
+    const mockQuery = 'query { user(id: "1") { id, name } }';
+    const mockError = new Error('GraphQL query failed');
+
+    // Mock the query method to reject with an error
+    graphqlClientMock.query.mockRejectedValue(mockError);
+
+    // Call fetchData and catch the error
+    await expect(util.fetchData(graphqlClientMock, mockQuery)).rejects.toThrow('GraphQL query failed');
+  });
+});
