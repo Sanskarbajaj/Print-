@@ -177,3 +177,113 @@ public class YamlReader {
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.constructor.Constructor;
+
+import java.io.InputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+public class YamlReader {
+
+    public static void main(String[] args) {
+        Yaml yaml = new Yaml(new Constructor(Map.class));
+        try (InputStream inputStream = YamlReader.class.getClassLoader().getResourceAsStream("config.yaml")) {
+
+            // Parse the YAML file
+            Map<String, Object> yamlData = yaml.load(inputStream);
+
+            // Read version, target
+            String version = yamlData.get("version").toString();
+            String target = yamlData.get("target").toString();
+
+            // Output version and target to confirm
+            System.out.println("Version: " + version);
+            System.out.println("Target: " + target);
+
+            // Read instances
+            List<Map<String, Object>> instances = (List<Map<String, Object>>) yamlData.get("instances");
+
+            // Loop through instances sequentially
+            for (Map<String, Object> instance : instances) {
+                System.out.println("Processing new instance...");
+
+                // Create a thread pool with a fixed number of threads
+                ExecutorService executorService = Executors.newFixedThreadPool(10);  // Adjust the number of threads as needed
+
+                // Create tasks for each enumeration item to run in parallel
+                List<Map<String, String>> enumerations = (List<Map<String, String>>) instance.get("enumeration");
+                for (Map<String, String> enumItem : enumerations) {
+                    executorService.submit(() -> {
+                        System.out.println("Instance name (Thread: " + Thread.currentThread().getName() + "): " + enumItem.get("name"));
+                    });
+                }
+
+                // Shutdown the ExecutorService after submitting all tasks
+                executorService.shutdown();
+
+                // Wait for all tasks in this instance to complete before moving to the next instance
+                try {
+                    if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) {
+                        executorService.shutdownNow();
+                    }
+                } catch (InterruptedException e) {
+                    executorService.shutdownNow();
+                    Thread.currentThread().interrupt();
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Generate a dummy YAML file
+        generateDummyYaml();
+    }
+
+    public static void generateDummyYaml() {
+        Yaml yaml = new Yaml();
+        Map<String, Object> data = Map.of(
+                "version", "1.0",
+                "target", "staging",
+                "instances", List.of(
+                        Map.of("enumeration", List.of(
+                                Map.of("name", "dummy1"),
+                                Map.of("name", "dummy2")
+                        )),
+                        Map.of("enumeration", List.of(
+                                Map.of("name", "dummy3"),
+                                Map.of("name", "dummy4")
+                        ))
+                )
+        );
+
+        DumperOptions options = new DumperOptions();
+        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+
+        Yaml yamlDumper = new Yaml(options);
+
+        try (FileWriter writer = new FileWriter("dummy.yaml")) {
+            yamlDumper.dump(data, writer);
+            System.out.println("Dummy YAML file generated.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
