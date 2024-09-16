@@ -18,3 +18,33 @@ describe('EbbsExposureSummary', () => {
     expect(el).to.be.instanceOf(LitElement);
   });
 });
+
+
+
+
+
+
+// Import necessary libraries and the component to test
+import { fixture, html, expect } from '@open-wc/testing';
+import { EbbsExposureSummary } from './EbbsExposureSummary'; // Adjust path if needed
+
+describe('EbbsExposureSummary Component', () => {
+  it('should render the correct HTML structure', async () => {
+    // Create an instance of the EbbsExposureSummary component
+    const el = await fixture(html`<div>${new EbbsExposureSummary().render()}</div>`);
+
+    // Check if the component renders the div with class container
+    const container = el.querySelector('div.container');
+    expect(container).to.exist;
+    expect(container.textContent).to.equal('hello');
+  });
+
+  it('should have the correct class for the div', async () => {
+    // Create an instance of the EbbsExposureSummary component
+    const el = await fixture(html`<div>${new EbbsExposureSummary().render()}</div>`);
+
+    // Ensure the div has the correct class
+    const container = el.querySelector('div.container');
+    expect(container).to.have.class('container');
+  });
+});
