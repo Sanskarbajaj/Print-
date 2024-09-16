@@ -48,3 +48,28 @@ describe('EbbsExposureSummary Component', () => {
     expect(container).to.have.class('container');
   });
 });
+
+
+
+
+import { fixture, html, expect } from '@open-wc/testing';
+import './EbbsExposureSummary';  // Ensure the custom element is registered
+
+describe('EbbsExposureSummary Component', () => {
+  it('should render the correct HTML structure', async () => {
+    // Use the custom element <ebbs-exposure-summary>
+    const el = await fixture(html`<ebbs-exposure-summary></ebbs-exposure-summary>`);
+
+    // Query the shadow DOM for the div.container
+    const container = el.shadowRoot.querySelector('div.container');
+    expect(container).to.exist;
+    expect(container.textContent).to.equal('hello');
+  });
+
+  it('should have the correct class for the div', async () => {
+    const el = await fixture(html`<ebbs-exposure-summary></ebbs-exposure-summary>`);
+
+    const container = el.shadowRoot.querySelector('div.container');
+    expect(container).to.have.class('container');
+  });
+});
