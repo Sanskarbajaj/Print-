@@ -1,0 +1,504 @@
+{
+  "id": "RT",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174001"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "Request Type",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "SLI",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174001"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "SCI LE ID",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "CI",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174002"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "CC ID",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "CA",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174002"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "Country of Account",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "CBRI",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174003"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "Core Banking Rel ID",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "LEN",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174003"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "Legal Entity Name",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "IN",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174004"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "Incorporation Number",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "COI",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174004"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "Country Of Incorporation",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "DOI",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174005"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "Date of Incorporation",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "AL1",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174005"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "Address Line 1",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "AL2",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174006"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "Address Line 2",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "T",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174006"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "Town",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "S",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174007"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "State",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "ZC",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174007"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "Zip Code",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "CC",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174008"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "Country Code",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "AT",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174008"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "Address Type",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "CS",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174009"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "Client Segment",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "SC",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174009"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "Segment Code",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "SSC",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174010"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "Sub Segment Code",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "EI",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174010"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "External Identifier",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "CLC",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174011"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "Customer Legal Constitution",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "FRR",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174011"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "Final Risk Rating",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "CF4S",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174012"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "Chapter 4 FATCA Status",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "CE",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174012"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "CRS Entity Type",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "UTT",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174013"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "US Tax Form Type",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "TFS",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174013"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "Tax Form Signed Date",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "TT",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174014"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "Tax Type",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "TID",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174014"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "Tax ID",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "GCT",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174015"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "GST Customer Type",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "GCSS",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174015"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "GST Customer Special Status",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "GRF",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174016"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "GST Registration Flag",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "GRN",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174016"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "GST Registration Number",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "SN",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174017"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "Short Name",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "AT",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174017"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "Account Title",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "PN",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174018"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "PAN No.",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "MA",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174018"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "Mailing Address",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "RA",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174019"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "Registered Address",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "PC",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174019"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "Primary Contact",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "AP",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174020"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "Attention Party",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "C",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174020"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "Contact",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "CT",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174021"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "Contact Type",
+    "readonly": false,
+    "required": true
+  }
+},
+{
+  "id": "AC",
+  "layout": {
+    "row": "123e4567-e89b-12d3-a456-426614174021"
+  },
+  "type": "text-field",
+  "template": {
+    "label": "Account Currency",
+    "readonly": false,
+    "required": true
+  }
+}
