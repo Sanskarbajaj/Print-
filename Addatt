@@ -121,4 +121,25 @@ public class XMLUpdaterExample {
             e.printStackTrace();
         }
     }
-}
+} 
+
+
+
+
+
+
+
+const mockData = {
+  data: {
+    data: {
+      _55313_exposure_check_plugin: {
+        get_outstanding: {
+          exposureChecksListResponse: [
+            // Your mock response list here
+            { id: 1, name: 'mock item' }
+          ],
+        },
+      },
+    },
+  },
+};
