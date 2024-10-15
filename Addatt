@@ -181,3 +181,36 @@ describe('MyComponent tests', () => {
     expect(element.shadowRoot.querySelector('some-element')).toBeTruthy(); // Replace with actual rendered elements
   });
 });
+
+
+
+
+
+
+import Util from './Util'; // Adjust the path based on your file structure
+
+describe('Util', () => {
+  const graphQLClient = {
+    query: jest.fn()
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should log error when fetchData fails', async () => {
+    // Mock the GraphQL client's query method to throw an error
+    const mockError = new Error('GraphQL query failed');
+    graphQLClient.query.mockRejectedValue(mockError);
+
+    // Mock console.log to test if it's called
+    console.log = jest.fn();
+
+    // Call the fetchData method
+    await Util.fetchData(graphQLClient, 'testQuery');
+
+    // Check if console.log is called with the correct error message
+    expect(console.log).toHaveBeenCalledWith('Error in fetchData:', mockError);
+  });
+
+});
