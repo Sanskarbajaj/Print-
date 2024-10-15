@@ -143,3 +143,41 @@ const mockData = {
     },
   },
 };
+
+
+
+
+
+import { MyComponent } from './my-component.js'; // Replace with your actual component
+
+describe('MyComponent tests', () => {
+  beforeAll(() => {
+    // Mock static properties
+    Object.defineProperty(MyComponent, 'properties', {
+      get: () => ({
+        inputLeid: { type: String, state: true },
+        inputLocation: { type: String, state: true },
+        inputTPXRef: { type: String, state: true },
+        inputProductName: { type: String, state: true },
+        searchParameters: { type: String, state: true },
+        locationsData: { type: Array, state: true },
+      }),
+    });
+  });
+
+  test('should render with mocked static properties', () => {
+    const element = new MyComponent();
+    element.inputLeid = '12345';
+    element.inputLocation = 'New York';
+    element.inputTPXRef = 'TPX123';
+    element.inputProductName = 'TestProduct';
+    element.searchParameters = 'searchTerm';
+    element.locationsData = [{ id: 1, name: 'Location 1' }];
+
+    document.body.appendChild(element);
+
+    expect(element.inputLeid).toBe('12345');
+    expect(element.inputLocation).toBe('New York');
+    expect(element.shadowRoot.querySelector('some-element')).toBeTruthy(); // Replace with actual rendered elements
+  });
+});
