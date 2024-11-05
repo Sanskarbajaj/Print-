@@ -1,0 +1,39 @@
+import { html, fixture, assert } from '@open-wc/testing';
+import { MyComponent } from '../path/to/your-component.js'; // replace with the path to your component
+
+describe('loadExposures function', () => {
+  let component;
+
+  beforeEach(async () => {
+    component = await fixture(html`<my-component></my-component>`);
+  });
+
+  it('should set isEmptyRow to true if exposureRequestJson length is 0', () => {
+    component.exposureRequestJson = []; // Set an empty array
+    component.loadExposures();
+    assert.isTrue(component.isEmptyRow);
+  });
+
+  it('should set isEmptyRow to false if exposureRequestJson has items', () => {
+    component.exposureRequestJson = [{ id: 1 }]; // Set a non-empty array
+    component.loadExposures();
+    assert.isFalse(component.isEmptyRow);
+  });
+
+  it('should store exposureRequestJson in sessionStorage', () => {
+    const jsonData = [{ id: 1 }];
+    component.exposureRequestJson = jsonData;
+    component.loadExposures();
+    
+    const storedData = JSON.parse(sessionStorage.getItem('exposureRequestJson'));
+    expect(storedData).toEqual(jsonData);
+  });
+
+  it('should navigate to "exposure" page', () => {
+    const navigateSpy = jest.spyOn(component.navigation, 'go'); // Mock the navigation function
+    component.loadExposures();
+    
+    expect(navigateSpy).toHaveBeenCalledWith('exposure');
+    navigateSpy.mockRestore();
+  });
+});
