@@ -1,0 +1,21 @@
+// Sample JSON structure
+const data = {
+    "message": "Done",
+    "job_id": "JID-9909ff4c-9c24-11ef-964b-0a586e810aed",
+    "status": "Completed",
+    "header": {},
+    "extracted_values": [
+        { "page_number": "2", "page_data": [] },
+        { "page_number": "4", "page_data": [] },
+        { "page_number": "13", "page_data": [] }
+    ]
+};
+
+// Function to extract page numbers
+function getPageNumbers(json) {
+    return json.extracted_values.map(entry => entry.page_number);
+}
+
+// Usage
+const pageNumbers = getPageNumbers(data);
+console.log(pageNumbers); // Output: ["2", "4", "13"]
