@@ -1,0 +1,56 @@
+import { LitElement, html, css } from 'lit';
+
+class BatchImageViewer extends LitElement {
+  static properties = {
+    images: { type: Array }, // Array to store currently loaded images
+    currentBatch: { type: Number } // Keeps track of the current batch
+  };
+
+  constructor() {
+    super();
+    this.images = [];
+    this.currentBatch = 0;
+    this.batchSize = 5; // Define the number of images to fetch per batch
+    this.totalImages = 25; // Total number of images available
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.loadNextBatch(); // Initial load of first batch
+  }
+
+  async loadNextBatch() {
+    const start = this.currentBatch * this.batchSize;
+    const end = Math.min(start + this.batchSize, this.totalImages);
+
+    // Simulating an API call that fetches a batch of images based on `start` and `end`
+    const newImages = await this.fetchImages(start, end);
+    
+    // Add new images to the existing array
+    this.images = [...this.images, ...newImages];
+    this.currentBatch++;
+  }
+
+  async fetchImages(start, end) {
+    // Replace this with the actual API call to fetch images
+    // Here we're returning placeholders to simulate fetched images
+    const fetchedImages = [];
+    for (let i = start; i < end; i++) {
+      fetchedImages.push(`Image ${i + 1}`); // Replace with actual image data
+    }
+    return fetchedImages;
+  }
+
+  render() {
+    return html`
+      <div>
+        ${this.images.map(image => html`<doc-viewer data="${image}"></doc-viewer>`)}
+      </div>
+      ${this.currentBatch * this.batchSize < this.totalImages 
+        ? html`<button @click="${this.loadNextBatch}">Load More</button>` 
+        : html`<p>All images loaded.</p>`}
+    `;
+  }
+}
+
+customElements.define('batch-image-viewer', BatchImageViewer);
