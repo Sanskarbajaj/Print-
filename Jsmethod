@@ -1,0 +1,29 @@
+function transformData(response) {
+    const selections = [];
+
+    response.extracted_values.forEach((page) => {
+        const pageNo = page.page_number;
+        
+        page.page_data.forEach((data) => {
+            data.values.forEach((value) => {
+                selections.push({
+                    pageNo: pageNo,
+                    name: value.entity_name,
+                    pred_ref_id: value.pred_ref_id,
+                    value: value.value,
+                    confidence: value.confidence,
+                    xmin: value.xmin,
+                    xmax: value.xmax,
+                    ymin: value.ymin,
+                    ymax: value.ymax
+                });
+            });
+        });
+    });
+
+    return selections;
+}
+
+// Example usage:
+const transformedSelections = transformData(response); // replace 'response' with your JSON data object
+console.log(transformedSelections);
