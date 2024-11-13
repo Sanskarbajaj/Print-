@@ -1,0 +1,90 @@
+import { LitElement, html, css } from 'lit';
+
+class ImageGallery extends LitElement {
+  static properties = {
+    baseImages: { type: Array },
+    batchSize: { type: Number },
+    totalImages: { type: Number },
+  };
+
+  constructor() {
+    super();
+    this.batchSize = 4;       // Number of images to load per batch
+    this.totalImages = 20;     // Total number of images needed
+    this.baseImages = new Array(this.totalImages).fill({ src: 'loading-image-url.jpg' });  // Placeholder images
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.fetchAllImagesInBatches();
+  }
+
+  async fetchSingleImage(page) {
+    const apiUrl = `https://example.com/api/image?page=${page}`;
+    
+    try {
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+      return data.base64Image ? `data:image/jpeg;base64,${data.base64Image}` : null;  // Assuming `base64Image` contains base64 string
+    } catch (error) {
+      console.error("Error fetching image:", error);
+      return null;
+    }
+  }
+
+  async fetchAllImagesInBatches() {
+    let loadedImages = 0;
+    let page = 1;
+
+    // Fetch images in batches of `batchSize` until we have `totalImages`
+    while (loadedImages < this.totalImages) {
+      const batchPromises = [];
+
+      // Fetch a batch of images
+      for (let i = 0; i < this.batchSize && loadedImages + i < this.totalImages; i++) {
+        batchPromises.push(this.fetchSingleImage(page + i));
+      }
+
+      // Wait for all images in the batch to be fetched
+      const images = await Promise.all(batchPromises);
+
+      // Update `baseImages` with fetched base64 images
+      images.forEach((image, i) => {
+        if (image) {
+          this.baseImages[loadedImages + i] = { src: image };
+        }
+      });
+
+      // Notify Lit of the `baseImages` update
+      this.requestUpdate();
+
+      // Move counters forward for the next batch
+      loadedImages += images.length;
+      page += this.batchSize;
+    }
+  }
+
+  render() {
+    return html`
+      <div class="gallery">
+        ${this.baseImages.map(image => html`
+          <img src="${image.src}" alt="Image" />
+        `)}
+      </div>
+    `;
+  }
+
+  static styles = css`
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 10px;
+    }
+    img {
+      width: 100%;
+      height: auto;
+    }
+  `;
+}
+
+customElements.define('image-gallery', ImageGallery);
