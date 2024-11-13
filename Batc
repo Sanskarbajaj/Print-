@@ -1,0 +1,81 @@
+import { LitElement, html, css } from 'lit';
+import { customElement, property, state } from 'lit/decorators.js';
+
+@customElement('doc-viewer')
+class DocViewer extends LitElement {
+  // Define the array to hold image URLs, initialized with loading placeholders.
+  @state()
+  pages = Array(20).fill('loading-placeholder.jpg'); // Adjust size as needed
+
+  @property({ type: Number })
+  batchSize = 4; // Number of images to fetch in each batch
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.loadImagesInBatches();
+  }
+
+  // Function to load images in batches and update the pages array
+  async loadImagesInBatches() {
+    let currentIndex = 0;
+    while (currentIndex < this.pages.length) {
+      // Fetch the next batch of images
+      const batch = await this.fetchImageBatch(currentIndex, this.batchSize);
+
+      // Update the `pages` array by replacing the placeholders with fetched images
+      this.pages = [
+        ...this.pages.slice(0, currentIndex),
+        ...batch,
+        ...this.pages.slice(currentIndex + batch.length)
+      ];
+
+      // Move to the next batch
+      currentIndex += this.batchSize;
+    }
+  }
+
+  // Function to fetch a batch of images based on start index and batch size
+  async fetchImageBatch(startIndex, batchSize) {
+    // For each index in the batch, fetch the image URL
+    const imagePromises = Array.from({ length: batchSize }, (_, i) =>
+      this.fetchImageFromApi(startIndex + i)
+    );
+    return await Promise.all(imagePromises);
+  }
+
+  // Mock function to fetch a single image by index (replace with actual API call)
+  async fetchImageFromApi(index) {
+    try {
+      // Replace this with your actual API request
+      const response = await fetch(`/api/image/${index}`);
+      const imageUrl = await response.json(); // Assume API returns image URL
+      return imageUrl;
+    } catch (error) {
+      console.error('Failed to load image:', error);
+      return 'error-placeholder.jpg'; // Optional error placeholder
+    }
+  }
+
+  render() {
+    return html`
+      <div class="doc-viewer">
+        ${this.pages.map(
+          (src) => html`<img src=${src} alt="Document Page" />`
+        )}
+      </div>
+    `;
+  }
+
+  static styles = css`
+    .doc-viewer {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
+    }
+    img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
+  `;
+}
