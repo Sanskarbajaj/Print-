@@ -1,0 +1,151 @@
+import { LitElement, html, css } from 'lit';
+
+export class FormValidationComponent extends LitElement {
+  static properties = {
+    // Properties for all fields
+    Name: { type: String },
+    RegisteredAddress: { type: String },
+    PrimaryContactPerson: { type: String },
+    ContactNumber: { type: String },
+    ContactEmailAddress: { type: String },
+    Currency: { type: String },
+    MailingAddress: { type: String },
+    SWIFTBICcode: { type: String },
+    CountryOfIncorporation: { type: String },
+    RegistrationNumber: { type: String },
+    ContactDetailsForTechnicalReferrals: { type: String },
+    AccountTitle: { type: String },
+    ChannelTermsAndCondition: { type: String },
+    GSTRegistrationFlag: { type: String },
+    GSTCustomerType: { type: String },
+    GSTCustomerSpecialStatus: { type: String },
+    PANNo: { type: String },
+    GSTRegistrationNumber: { type: String },
+    MobileNumber: { type: String },
+  };
+
+  static styles = css`
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .error {
+      color: red;
+      font-size: 0.8rem;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:disabled {
+      background-color: #ccc;
+    }
+  `;
+
+  constructor() {
+    super();
+    // Initialize properties
+    this.Name = '';
+    this.RegisteredAddress = '';
+    this.PrimaryContactPerson = '';
+    this.ContactNumber = '';
+    this.ContactEmailAddress = '';
+    this.Currency = '';
+    this.MailingAddress = '';
+    this.SWIFTBICcode = '';
+    this.CountryOfIncorporation = '';
+    this.RegistrationNumber = '';
+    this.ContactDetailsForTechnicalReferrals = '';
+    this.AccountTitle = '';
+    this.ChannelTermsAndCondition = '';
+    this.GSTRegistrationFlag = '';
+    this.GSTCustomerType = '';
+    this.GSTCustomerSpecialStatus = '';
+    this.PANNo = '';
+    this.GSTRegistrationNumber = '';
+    this.MobileNumber = '';
+  }
+
+  validateFields() {
+    let isValid = true;
+
+    const fields = [
+      { key: 'Name', value: this.Name, errorMsg: 'Name is required.' },
+      { key: 'RegisteredAddress', value: this.RegisteredAddress, errorMsg: 'Registered Address is required.' },
+      { key: 'PrimaryContactPerson', value: this.PrimaryContactPerson, errorMsg: 'Primary Contact Person is required.' },
+      { key: 'ContactNumber', value: this.ContactNumber, errorMsg: 'Contact Number is required.' },
+      { key: 'ContactEmailAddress', value: this.ContactEmailAddress, errorMsg: 'Email Address is required.' },
+      { key: 'Currency', value: this.Currency, errorMsg: 'Currency is required.' },
+      { key: 'MailingAddress', value: this.MailingAddress, errorMsg: 'Mailing Address is required.' },
+      { key: 'SWIFTBICcode', value: this.SWIFTBICcode, errorMsg: 'SWIFT BIC code is required.' },
+      { key: 'CountryOfIncorporation', value: this.CountryOfIncorporation, errorMsg: 'Country of Incorporation is required.' },
+      { key: 'RegistrationNumber', value: this.RegistrationNumber, errorMsg: 'Registration Number is required.' },
+      { key: 'ContactDetailsForTechnicalReferrals', value: this.ContactDetailsForTechnicalReferrals, errorMsg: 'Contact Details for Technical Referrals are required.' },
+      { key: 'AccountTitle', value: this.AccountTitle, errorMsg: 'Account Title is required.' },
+      { key: 'ChannelTermsAndCondition', value: this.ChannelTermsAndCondition, errorMsg: 'Channel Terms and Conditions are required.' },
+      { key: 'GSTRegistrationFlag', value: this.GSTRegistrationFlag, errorMsg: 'GST Registration Flag is required.' },
+      { key: 'GSTCustomerType', value: this.GSTCustomerType, errorMsg: 'GST Customer Type is required.' },
+      { key: 'GSTCustomerSpecialStatus', value: this.GSTCustomerSpecialStatus, errorMsg: 'GST Customer Special Status is required.' },
+      { key: 'PANNo', value: this.PANNo, errorMsg: 'PAN Number is required.' },
+      { key: 'GSTRegistrationNumber', value: this.GSTRegistrationNumber, errorMsg: 'GST Registration Number is required.' },
+      { key: 'MobileNumber', value: this.MobileNumber, errorMsg: 'Mobile Number is required.' },
+    ];
+
+    fields.forEach(field => {
+      const inputElement = this.shadowRoot.querySelector(`#${field.key}`);
+      if (!field.value || field.value.trim() === '') {
+        isValid = false;
+        if (inputElement) {
+          inputElement.errorMessage = field.errorMsg;
+        }
+      } else {
+        if (inputElement) {
+          inputElement.errorMessage = ''; // Clear existing error
+        }
+      }
+    });
+
+    return isValid;
+  }
+
+  handleSubmit() {
+    const isFormValid = this.validateFields();
+    if (isFormValid) {
+      console.log('Form submitted successfully!');
+      // Add your submission logic here
+    } else {
+      console.log('Please fill in all required fields.');
+    }
+  }
+
+  render() {
+    return html`
+      <form>
+        <vaadin-text-field id="Name" label="Name" .value=${this.Name} @input=${e => (this.Name = e.target.value)}></vaadin-text-field>
+        <vaadin-text-field id="RegisteredAddress" label="Registered Address" .value=${this.RegisteredAddress} @input=${e => (this.RegisteredAddress = e.target.value)}></vaadin-text-field>
+        <vaadin-text-field id="PrimaryContactPerson" label="Primary Contact Person" .value=${this.PrimaryContactPerson} @input=${e => (this.PrimaryContactPerson = e.target.value)}></vaadin-text-field>
+        <vaadin-text-field id="ContactNumber" label="Contact Number" .value=${this.ContactNumber} @input=${e => (this.ContactNumber = e.target.value)}></vaadin-text-field>
+        <vaadin-text-field id="ContactEmailAddress" label="Contact Email Address" .value=${this.ContactEmailAddress} @input=${e => (this.ContactEmailAddress = e.target.value)}></vaadin-text-field>
+        <vaadin-dropdown-menu
+          id="GSTRegistrationFlag"
+          label="GST Registration Flag"
+          .value=${this.GSTRegistrationFlag}
+          @value-changed=${e => (this.GSTRegistrationFlag = e.detail.value)}
+        >
+          <vaadin-list-box>
+            <vaadin-item value="Yes">Yes</vaadin-item>
+            <vaadin-item value="No">No</vaadin-item>
+          </vaadin-list-box>
+        </vaadin-dropdown-menu>
+        <button type="button" @click=${this.handleSubmit}>Submit</button>
+      </form>
+    `;
+  }
+}
+
+customElements.define('form-validation-component', FormValidationComponent);
