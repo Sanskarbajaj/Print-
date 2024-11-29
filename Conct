@@ -1,0 +1,73 @@
+import { LitElement, html, css } from 'lit';
+
+class ContactManager extends LitElement {
+  static properties = {
+    contacts: { type: Array }, // Stores the list of contact numbers
+  };
+
+  static styles = css`
+    .contact-box {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+    .contact-box input {
+      margin-right: 10px;
+      padding: 5px;
+    }
+    .contact-box button {
+      margin-left: 5px;
+    }
+  `;
+
+  constructor() {
+    super();
+    this.contacts = ['']; // Initial state with one empty contact
+  }
+
+  // Add a new contact
+  addContact() {
+    this.contacts = [...this.contacts, '']; // Append a new empty contact
+  }
+
+  // Remove a contact
+  removeContact(index) {
+    if (this.contacts.length > 1) {
+      this.contacts = this.contacts.filter((_, i) => i !== index); // Remove the contact at index
+    }
+  }
+
+  // Update a contact's value
+  updateContact(index, value) {
+    this.contacts = this.contacts.map((contact, i) =>
+      i === index ? value : contact
+    );
+  }
+
+  render() {
+    return html`
+      <div id="contacts-container">
+        ${this.contacts.map(
+          (contact, index) => html`
+            <div class="contact-box">
+              <input
+                type="text"
+                .value=${contact}
+                @input=${(e) => this.updateContact(index, e.target.value)}
+                placeholder="Enter contact number"
+              />
+              <!-- Display + button for all textboxes -->
+              <button @click=${this.addContact}>+</button>
+              <!-- Display - button only if not the first textbox -->
+              ${index > 0
+                ? html`<button @click=${() => this.removeContact(index)}>-</button>`
+                : ''}
+            </div>
+          `
+        )}
+      </div>
+    `;
+  }
+}
+
+customElements.define('contact-manager', ContactManager);
