@@ -1,0 +1,51 @@
+async fetchAllImagesInBatches() {
+  const priorityPages = [2, 3, 4, 13]; // Specify the priority pages
+  const loadedImages = {};
+  let batchPromises = [];
+  
+  // Load priority pages first
+  for (const page of priorityPages) {
+    batchPromises.push(this.getImage(page, this.jobId, this.docId));
+  }
+
+  // Wait for priority pages to load
+  const priorityImages = await Promise.all(batchPromises);
+
+  // Update loaded images for priority pages
+  priorityImages.forEach((image, index) => {
+    const pageIndex = priorityPages[index];
+    if (image) {
+      loadedImages[pageIndex] = `data:image/png;base64,${image}`;
+    }
+  });
+
+  // Reset batch promises for remaining pages
+  batchPromises = [];
+  
+  // Load non-priority pages in batches
+  for (let i = 1; i <= this.totalImages; i++) {
+    if (!priorityPages.includes(i)) {
+      batchPromises.push(this.getImage(i, this.jobId, this.docId));
+    }
+
+    // Fetch in batches
+    if (batchPromises.length === this.batchSize || i === this.totalImages) {
+      const batchImages = await Promise.all(batchPromises);
+      batchImages.forEach((image, index) => {
+        const pageIndex = i - batchPromises.length + index + 1;
+        if (image) {
+          loadedImages[pageIndex] = `data:image/png;base64,${image}`;
+        }
+      });
+      batchPromises = [];
+    }
+  }
+
+  // Ensure images are stored at the correct index
+  this.baseImages = Array.from({ length: this.totalImages }, (_, index) =>
+    loadedImages[index + 1] || null
+  );
+
+  // Notify Lit of the `baseImages` update
+  this.requestUpdate();
+}
