@@ -1,0 +1,104 @@
+import { LitElement, html, css } from 'lit';
+
+class AccountTable extends LitElement {
+  static properties = {
+    accountTitles: { type: String },
+    currencies: { type: String },
+    data: { type: Array },
+  };
+
+  constructor() {
+    super();
+    this.accountTitles = 'a,b'; // Comma-separated account titles
+    this.currencies = 'c,d'; // Comma-separated currencies
+    this.data = this.parseData();
+  }
+
+  // Parse the comma-separated strings into an array of objects
+  parseData() {
+    const titles = this.accountTitles.split(',');
+    const currencies = this.currencies.split(',');
+    return titles.map((title, index) => ({
+      accountTitle: title,
+      currency: currencies[index] || '',
+    }));
+  }
+
+  // Add a new row
+  addRow() {
+    this.data = [...this.data, { accountTitle: '', currency: '' }];
+  }
+
+  // Delete a row by index
+  deleteRow(index) {
+    this.data = this.data.filter((_, i) => i !== index);
+  }
+
+  // Update a specific cell value
+  updateCell(index, field, value) {
+    this.data = this.data.map((row, i) =>
+      i === index ? { ...row, [field]: value } : row
+    );
+  }
+
+  render() {
+    return html`
+      <style>
+        table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+        th,
+        td {
+          border: 1px solid #ccc;
+          padding: 8px;
+          text-align: left;
+        }
+        button {
+          margin: 0 5px;
+        }
+      </style>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Account Title</th>
+            <th>Currency</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${this.data.map(
+            (row, index) => html`
+              <tr>
+                <td>
+                  <input
+                    type="text"
+                    .value=${row.accountTitle}
+                    @input=${(e) =>
+                      this.updateCell(index, 'accountTitle', e.target.value)}
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    .value=${row.currency}
+                    @input=${(e) =>
+                      this.updateCell(index, 'currency', e.target.value)}
+                  />
+                </td>
+                <td>
+                  <button @click=${() => this.deleteRow(index)}>Delete</button>
+                </td>
+              </tr>
+            `
+          )}
+        </tbody>
+      </table>
+
+      <button @click=${this.addRow}>Add New Row</button>
+    `;
+  }
+}
+
+customElements.define('account-table', AccountTable);
