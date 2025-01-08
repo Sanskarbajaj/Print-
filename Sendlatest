@@ -1,0 +1,88 @@
+import { LitElement, html, css } from 'lit';
+import { state } from 'lit/decorators.js';
+
+class DynamicJsonForm extends LitElement {
+  @state()
+  data = {
+    message: 'Done',
+    jobId: 'JID-19d9a8dc',
+    status: 'Completed',
+    header: {
+      clientRefNumber: 'id1234d2953',
+    },
+    extractions: [
+      {
+        pageNo: '2',
+        pageData: [
+          {
+            entities: [
+              { name: 'Name', value: 'IRI' },
+              { name: 'Registration Number', value: 'U351' },
+              { name: 'Country of Incorporation', value: 'INDIA' },
+              { name: 'Registered Address', value: 'New Delhi' },
+              { name: 'Contact Number', value: '+90999 99999' },
+              { name: 'Contact Email Address', value: 'dummy@email.com' },
+            ],
+          },
+        ],
+      },
+    ],
+  };
+
+  static styles = css`
+    form {
+      margin: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    input {
+      margin-bottom: 10px;
+      padding: 5px;
+      width: 100%;
+    }
+    button {
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+  `;
+
+  render() {
+    return html`
+      <form>
+        ${this.data.extractions.map((extraction) =>
+          extraction.pageData.map((pageData) =>
+            pageData.entities.map(
+              (entity) => html`
+                <label>${entity.name}:</label>
+                <input
+                  type="text"
+                  .value="${entity.value}"
+                  @input="${(e) => this.updateJson(entity.name, e.target.value)}"
+                />
+              `
+            )
+          )
+        )}
+      </form>
+      <pre>${JSON.stringify(this.data, null, 2)}</pre>
+    `;
+  }
+
+  updateJson(fieldName, newValue) {
+    // Find and update the JSON data dynamically
+    this.data.extractions.forEach((extraction) =>
+      extraction.pageData.forEach((pageData) =>
+        pageData.entities.forEach((entity) => {
+          if (entity.name === fieldName) {
+            entity.value = newValue; // Update the value
+          }
+        })
+      )
+    );
+    this.requestUpdate(); // Trigger a re-render
+  }
+}
+
+customElements.define('dynamic-json-form', DynamicJsonForm);
