@@ -1,0 +1,131 @@
+import { LitElement, html } from 'lit';
+import { state } from 'lit/decorators.js';
+import { ApolloClient, InMemoryCache, gql } from '@apollo/client/core';
+
+class DataForm extends LitElement {
+  @state()
+  data = {
+    message: 'Done',
+    jobId: 'JID-19d9a8dc',
+    status: 'Completed',
+    header: {
+      clientRefNumber: 'id1234d2953',
+      // ...other header fields
+    },
+    extractions: [
+      {
+        pageNo: '2',
+        pageData: [],
+      },
+      {
+        pageNo: '13',
+        pageData: [
+          {
+            entities: [
+              {
+                name: 'channel terms and condition',
+                predRefId: '88687756-742a-428b-b57a-7519b266b101',
+                value: 'StandardTerms_2020_v1',
+                confidence: 93.92,
+                xmin: 1348,
+                xmax: 1575,
+                ymin: 2301,
+                ymax: 2332,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  };
+
+  render() {
+    return html`
+      <form @submit="${this.handleSubmit}">
+        ${this.data.extractions.map(
+          (extraction, extractionIndex) => html`
+            <div>
+              <label>Page No:</label>
+              <input
+                type="text"
+                .value="${extraction.pageNo}"
+                @input="${(e) => this.updateExtractionField(e, extractionIndex, 'pageNo')}"
+              />
+
+              ${extraction.pageData.map(
+                (pageData, pageDataIndex) =>
+                  pageData.entities.map(
+                    (entity, entityIndex) => html`
+                      <div>
+                        <label>Entity Name:</label>
+                        <input
+                          type="text"
+                          .value="${entity.name}"
+                          @input="${(e) =>
+                            this.updateEntityField(
+                              e,
+                              extractionIndex,
+                              pageDataIndex,
+                              entityIndex,
+                              'name'
+                            )}"
+                        />
+                        <!-- Add more fields as needed -->
+                      </div>
+                    `
+                  )
+              )}
+            </div>
+          `
+        )}
+        <button type="submit">Submit</button>
+      </form>
+    `;
+  }
+
+  updateExtractionField(e, extractionIndex, field) {
+    this.data.extractions[extractionIndex][field] = e.target.value;
+    this.requestUpdate();
+  }
+
+  updateEntityField(e, extractionIndex, pageDataIndex, entityIndex, field) {
+    this.data.extractions[extractionIndex].pageData[pageDataIndex].entities[
+      entityIndex
+    ][field] = e.target.value;
+    this.requestUpdate();
+  }
+
+  async handleSubmit(e) {
+    e.preventDefault();
+    try {
+      const response = await this.sendFeedback(this.data);
+      console.log('API Response:', response);
+    } catch (error) {
+      console.error('API Error:', error);
+    }
+  }
+
+  sendFeedback(data) {
+    const client = new ApolloClient({
+      uri: 'YOUR_GRAPHQL_ENDPOINT', // Replace with your endpoint
+      cache: new InMemoryCache(),
+    });
+
+    const SEND_FEEDBACK_MUTATION = gql`
+      mutation sendFeedback($input: SwooshExtractionsInput!) {
+        sendFeedback(input: $input) {
+          isSuccess
+        }
+      }
+    `;
+
+    return client.mutate({
+      mutation: SEND_FEEDBACK_MUTATION,
+      variables: {
+        input: data,
+      },
+    });
+  }
+}
+
+customElements.define('data-form', DataForm);
