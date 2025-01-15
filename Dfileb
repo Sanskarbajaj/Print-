@@ -1,0 +1,80 @@
+import { LitElement, html, css } from 'lit';
+
+export class FileDownloadComponent extends LitElement {
+  static styles = css`
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  `;
+
+  render() {
+    return html`
+      <div>
+        <input id="docId" type="text" placeholder="Enter Document ID" />
+        <button @click="${this.downloadFile}">Download File</button>
+      </div>
+    `;
+  }
+
+  async downloadFile() {
+    const docId = this.shadowRoot?.querySelector('#docId').value;
+
+    if (!docId) {
+      alert('Please enter a Document ID');
+      return;
+    }
+
+    try {
+      const response = await fetch(`/download-file?docId=${docId}`, {
+        method: 'GET',
+      });
+
+      if (!response.ok) {
+        alert('Failed to fetch the file');
+        return;
+      }
+
+      const data = await response.json();
+      const { fileName, fileData } = data;
+
+      if (!fileData || !fileName) {
+        alert('Invalid response from the server');
+        return;
+      }
+
+      // Decode Base64 and trigger download
+      this.downloadBase64File(fileData, fileName);
+    } catch (error) {
+      console.error('Error downloading file:', error);
+      alert('An error occurred while downloading the file');
+    }
+  }
+
+  downloadBase64File(base64, fileName) {
+    // Convert Base64 string to Blob
+    const byteCharacters = atob(base64);
+    const byteNumbers = new Array(byteCharacters.length).fill(0).map((_, i) => byteCharacters.charCodeAt(i));
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray]);
+
+    // Create a link element and trigger download
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  }
+}
+
+customElements.define('file-download-component', FileDownloadComponent);
