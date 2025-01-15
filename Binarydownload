@@ -1,0 +1,77 @@
+import { LitElement, html, css } from 'lit';
+
+export class FileDownloadComponent extends LitElement {
+  static styles = css`
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  `;
+
+  render() {
+    return html`
+      <div>
+        <input id="docId" type="text" placeholder="Enter Document ID" />
+        <button @click="${this.downloadFile}">Download File</button>
+      </div>
+    `;
+  }
+
+  async downloadFile() {
+    const docId = this.shadowRoot?.querySelector('#docId').value;
+
+    if (!docId) {
+      alert('Please enter a Document ID');
+      return;
+    }
+
+    try {
+      const response = await fetch(`/download-file?docId=${docId}`, {
+        method: 'GET',
+      });
+
+      if (!response.ok) {
+        alert('Failed to fetch the file');
+        return;
+      }
+
+      // Get the binary response as a Blob
+      const blob = await response.blob();
+
+      // Extract the filename from headers (if provided) or set a default name
+      const contentDisposition = response.headers.get('Content-Disposition');
+      const fileNameMatch = contentDisposition?.match(/filename="(.+)"/);
+      const fileName = fileNameMatch ? fileNameMatch[1] : 'downloaded-file';
+
+      // Trigger file download
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading file:', error);
+      alert('An error occurred while downloading the file');
+    }
+  }
+}
+
+customElements.define('file-download-component', FileDownloadComponent);
+
+
+
+
+{
+  "fileName": "test_document.docx",
+  "fileData": "504b0304140000000800..."
+}
