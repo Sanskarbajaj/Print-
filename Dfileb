@@ -78,3 +78,10 @@ export class FileDownloadComponent extends LitElement {
 }
 
 customElements.define('file-download-component', FileDownloadComponent);
+
+
+
+{
+  "fileName": "testfile.txt",
+  "fileData": "VGhpcyBpcyBhIHRlc3QgZmlsZSBmb3IgQmFzZTY0IGVuY29kaW5nLg=="
+}
