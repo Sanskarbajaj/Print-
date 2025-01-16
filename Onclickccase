@@ -1,0 +1,98 @@
+export const tableConf = [
+  {
+    property: 'id',
+    header: 'Case No.',
+    filter: true,
+    columnStyle: 'min-width: 120px; padding: var(--sc-spacing);',
+    pinned: 'left',
+    sort: true,
+    cell: (value) => {
+      // Return the link with an event dispatch
+      return html`
+        <div>
+          <sc-link
+            href="#"
+            @click="${(e) => emitLinkClickEvent(e, value)}"
+          >
+            ${value}
+          </sc-link>
+        </div>
+      `;
+    },
+  },
+];
+
+// Emit a custom event when the link is clicked
+const emitLinkClickEvent = (event, value) => {
+  event.preventDefault(); // Prevent default link behavior
+
+  // Create and dispatch a custom event
+  const customEvent = new CustomEvent('link-click', {
+    detail: { caseId: value }, // Pass the clicked value
+    bubbles: true, // Ensure the event bubbles up
+    composed: true, // Allow it to cross shadow DOM boundaries
+  });
+  event.target.dispatchEvent(customEvent);
+};
+
+
+
+import { LitElement, html } from 'lit';
+
+class MyCasesDashboard extends LitElement {
+  static properties = {
+    cases: { type: Array }, // Example property to hold cases data
+    selectedCase: { type: Object }, // To store state related to the clicked case
+  };
+
+  constructor() {
+    super();
+    this.cases = []; // Initial data
+    this.selectedCase = null; // Initial state
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    // Add event listener for the custom event
+    this.addEventListener('link-click', this.handleLinkClick);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    // Remove the event listener
+    this.removeEventListener('link-click', this.handleLinkClick);
+  }
+
+  handleLinkClick(event) {
+    const { caseId } = event.detail; // Get the clicked case ID
+    console.log('Case ID clicked:', caseId);
+
+    // Example API call based on case ID
+    fetch(`/case/api/${caseId}`, {
+      method: 'GET',
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('API Response:', data);
+        this.selectedCase = data; // Update the state with API response
+      })
+      .catch((error) => console.error('Error:', error));
+  }
+
+  render() {
+    return html`
+      <div>
+        <h1>My Cases Dashboard</h1>
+        <!-- Render the table here -->
+        <case-table .data="${this.cases}"></case-table>
+
+        <!-- Optionally show selected case details -->
+        ${this.selectedCase
+          ? html`<div>Selected Case Details: ${JSON.stringify(this.selectedCase)}</div>`
+          : ''}
+      </div>
+    `;
+  }
+}
+
+customElements.define('my-cases-dashboard', MyCasesDashboard);
