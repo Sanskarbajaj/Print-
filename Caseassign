@@ -1,0 +1,87 @@
+import { LitElement, html, css } from 'lit';
+
+class MyCasesDashboard extends LitElement {
+  static properties = {
+    cases: { type: Array },
+    userId: { type: String }, // Current user's ID
+  };
+
+  constructor() {
+    super();
+    this.cases = [
+      { caseId: '1', name: 'Case 1', date: '2025-01-01' },
+      { caseId: '2', name: 'Case 2', date: '2025-01-02' },
+      { caseId: '3', name: 'Case 3', date: '2025-01-03' },
+    ];
+    this.userId = 'user123'; // Example user ID
+  }
+
+  // Handle case assignment
+  assignCase(caseId) {
+    const assignedCases = JSON.parse(localStorage.getItem('assignedCases')) || {};
+    assignedCases[caseId] = this.userId; // Assign case to the current user
+    localStorage.setItem('assignedCases', JSON.stringify(assignedCases));
+    this.requestUpdate(); // Update the UI
+    this.navigateToCase(caseId);
+  }
+
+  // Navigate to another page
+  navigateToCase(caseId) {
+    window.location.href = `/case-details/${caseId}`;
+  }
+
+  // Check if a case is assigned
+  isCaseAssigned(caseId) {
+    const assignedCases = JSON.parse(localStorage.getItem('assignedCases')) || {};
+    return assignedCases[caseId] === this.userId;
+  }
+
+  render() {
+    return html`
+      <table>
+        <thead>
+          <tr>
+            <th>Case ID</th>
+            <th>Name</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${this.cases.map(
+            (caseItem) => html`
+              <tr @click=${() => this.assignCase(caseItem.caseId)}>
+                <td>${caseItem.caseId}</td>
+                <td>${caseItem.name}</td>
+                <td>${caseItem.date}</td>
+                <td>
+                  ${this.isCaseAssigned(caseItem.caseId)
+                    ? html`<button disabled>Locked</button>`
+                    : ''}
+                </td>
+              </tr>
+            `
+          )}
+        </tbody>
+      </table>
+    `;
+  }
+
+  static styles = css`
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th,
+    td {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+    tr:hover {
+      background-color: #f1f1f1;
+      cursor: pointer;
+    }
+  `;
+}
+
+customElements.define('my-cases-dashboard', MyCasesDashboard);
