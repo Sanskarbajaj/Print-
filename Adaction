@@ -1,0 +1,79 @@
+import { LitElement, html } from 'lit';
+
+class MyCasesDashboard extends LitElement {
+  constructor() {
+    super();
+    this.tableData = []; // Original data from CaseListData.js or API
+    this.tableConf = []; // Your table configuration
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+
+    // Example: Fetch your data and add actions dynamically
+    this.tableData = this.getDataWithActions();
+  }
+
+  getDataWithActions() {
+    const caseListData = [
+      {
+        id: 'SCH167G210A1170724096121',
+        status: 'pending',
+        createdDate: '01 Aug 2024',
+        createdById: '1431830',
+      },
+      // ...other data
+    ];
+
+    // Add actions to each data row
+    return caseListData.map((row) => ({
+      ...row,
+      action: html`<button @click="${() => this.handleAction(row)}">Action</button>`,
+    }));
+  }
+
+  handleAction(row) {
+    alert(`Action triggered for row ID: ${row.id}`);
+  }
+
+  render() {
+    return html`
+      <sc-tab-group class="sc-tabs">
+        <sc-tab slot="nav" panel="tab1" active>All</sc-tab>
+        <sc-tab-panel name="tab1">
+          <sc-table
+            class="sticky-column"
+            page-size="10"
+            .data=${this.tableData}
+            .conf=${this.tableConf}
+          ></sc-table>
+        </sc-tab-panel>
+      </sc-tab-group>
+    `;
+  }
+}
+
+customElements.define('my-cases-dashboard', MyCasesDashboard);
+
+
+
+export const tableConf = [
+  {
+    property: 'createdById',
+    filter: true,
+    header: 'Created By',
+    columnStyle: 'min-width: 120px;',
+  },
+  {
+    property: 'status',
+    filter: true,
+    header: 'Status',
+    columnStyle: 'min-width: 100px;',
+  },
+  {
+    property: 'action',
+    header: 'Actions',
+    columnStyle: 'min-width: 120px;',
+    cell: (row) => row.action, // Render dynamic action HTML
+  },
+];
