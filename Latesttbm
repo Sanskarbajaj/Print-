@@ -1,9 +1,13 @@
-import { LitElement, html } from 'lit';
+import { LitElement, html, css } from 'lit';
 
-class TextBoxManager extends LitElement {
+export class TextBoxManager extends LitElement {
   static properties = {
-    contacts: { type: Array },
+    contacts: { type: Array }, // Array of contact strings passed from parent
   };
+
+  static styles = css`
+    /* Your existing styles remain untouched */
+  `;
 
   handleAdd() {
     this.dispatchEvent(new CustomEvent('add-contact', { bubbles: true, composed: true }));
@@ -61,157 +65,41 @@ import { LitElement, html } from 'lit';
 
 class DocViewer extends LitElement {
   static properties = {
-    contacts: { type: Array },
+    contacts: { type: Array }, // Array of contact strings
   };
 
   constructor() {
     super();
-    this.contacts = ['']; // Initialize with one empty contact
+    this.contacts = ['John', 'Jane', 'Doe']; // Initial contacts (comma-separated string is converted to an array manually here)
   }
 
-  addContact() {
-    this.contacts = [...this.contacts, ''];
+  handleAddContact() {
+    this.contacts = [...this.contacts, '']; // Add a new empty contact
+    console.log('Added new contact:', this.contacts);
   }
 
-  removeContact(index) {
+  handleRemoveContact(e) {
+    const index = e.detail.index;
     this.contacts = this.contacts.filter((_, i) => i !== index);
+    console.log('Removed contact at index', index, ':', this.contacts);
   }
 
-  updateContact(index, value) {
-    this.contacts = this.contacts.map((contact, i) =>
-      i === index ? value : contact
-    );
+  handleUpdateContact(e) {
+    const { index, value } = e.detail;
+    this.contacts = this.contacts.map((contact, i) => (i === index ? value : contact));
+    console.log('Updated contact:', this.contacts);
   }
 
   render() {
     return html`
       <textbox-manager
         .contacts=${this.contacts}
-        @add-contact=${this.addContact}
-        @remove-contact=${(e) => this.removeContact(e.detail.index)}
-        @update-contact=${(e) => this.updateContact(e.detail.index, e.detail.value)}
+        @add-contact=${this.handleAddContact}
+        @remove-contact=${this.handleRemoveContact}
+        @update-contact=${this.handleUpdateContact}
       ></textbox-manager>
     `;
   }
 }
 
 customElements.define('doc-viewer', DocViewer);
-
-
-
-
-
-import { LitElement, html } from 'lit';
-
-class TextBoxManager extends LitElement {
-  static properties = {
-    contacts: { type: Array },
-  };
-
-  handleAdd() {
-    this.dispatchEvent(new CustomEvent('add-contact', { bubbles: true, composed: true }));
-  }
-
-  handleRemove(index) {
-    this.dispatchEvent(
-      new CustomEvent('remove-contact', {
-        detail: { index },
-        bubbles: true,
-        composed: true,
-      })
-    );
-  }
-
-  handleUpdate(index, value) {
-    this.dispatchEvent(
-      new CustomEvent('update-contact', {
-        detail: { index, value },
-        bubbles: true,
-        composed: true,
-      })
-    );
-  }
-
-  render() {
-    return html`
-      <div id="contacts-container">
-        ${this.contacts.map(
-          (contact, index) => html`
-            <div class="contact-box">
-              <input
-                type="text"
-                .value=${contact}
-                @input=${(e) => this.handleUpdate(index, e.target.value)}
-              />
-              <button @click=${this.handleAdd}>+</button>
-              ${index > 0
-                ? html`<button @click=${() => this.handleRemove(index)}>-</button>`
-                : ''}
-            </div>
-          `
-        )}
-      </div>
-    `;
-  }
-}
-
-customElements.define('textbox-manager', TextBoxManager);
-
-
-
-import { LitElement, html } from 'lit';
-
-class DocViewer extends LitElement {
-  static properties = {
-    contacts: { type: Array },
-    contactString: { type: String },
-  };
-
-  constructor() {
-    super();
-    this.contactString = 'John,Jane,Doe'; // Example comma-separated string
-    this.contacts = this.contactString.split(',').map((contact) => contact.trim());
-  }
-
-  addContact() {
-    this.contacts = [...this.contacts, ''];
-    this.updateContactString();
-  }
-
-  removeContact(index) {
-    this.contacts = this.contacts.filter((_, i) => i !== index);
-    this.updateContactString();
-  }
-
-  updateContact(index, value) {
-    this.contacts = this.contacts.map((contact, i) =>
-      i === index ? value : contact
-    );
-    this.updateContactString();
-  }
-
-  updateContactString() {
-    // Convert the contacts array back to a comma-separated string
-    this.contactString = this.contacts.join(',');
-  }
-
-  render() {
-    return html`
-      <!-- Render TextboxManager -->
-      <textbox-manager
-        .contacts=${this.contacts}
-        @add-contact=${this.addContact}
-        @remove-contact=${(e) => this.removeContact(e.detail.index)}
-        @update-contact=${(e) => this.updateContact(e.detail.index, e.detail.value)}
-      ></textbox-manager>
-
-      <!-- Display Comma-Separated String -->
-      <div>Comma-separated contacts: ${this.contactString}</div>
-    `;
-  }
-}
-
-customElements.define('doc-viewer', DocViewer);
-
-
-
