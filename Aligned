@@ -18,23 +18,19 @@ class DocViewer extends LitElement {
     this.currencies = ['USD', 'EUR']; // 2 items
   }
 
-  // Align arrays dynamically
-  get alignedData() {
+  // Automatically align arrays dynamically
+  get alignedAccountTitles() {
     const maxLength = Math.max(this.accountTitles.length, this.currencies.length);
+    return [...this.accountTitles, ...Array(maxLength - this.accountTitles.length).fill('')];
+  }
 
-    // Extend both arrays to the same length
-    const alignedTitles = [...this.accountTitles, ...Array(maxLength - this.accountTitles.length).fill('')];
-    const alignedCurrencies = [...this.currencies, ...Array(maxLength - this.currencies.length).fill('')];
-
-    // Return combined data for easier handling
-    return alignedTitles.map((title, index) => ({
-      accountTitle: title,
-      currency: alignedCurrencies[index],
-    }));
+  get alignedCurrencies() {
+    const maxLength = Math.max(this.accountTitles.length, this.currencies.length);
+    return [...this.currencies, ...Array(maxLength - this.currencies.length).fill('')];
   }
 
   handleAddRow() {
-    // Add a new empty row
+    // Add a new empty row to both arrays
     this.accountTitles = [...this.accountTitles, ''];
     this.currencies = [...this.currencies, ''];
     console.log('Row added:', this.accountTitles, this.currencies);
@@ -52,12 +48,10 @@ class DocViewer extends LitElement {
     const { index, field, value } = e.detail;
 
     if (field === 'accountTitles') {
-      // Update accountTitles immutably
       this.accountTitles = this.accountTitles.map((item, i) =>
         i === index ? value : item
       );
     } else if (field === 'currencies') {
-      // Update currencies immutably
       this.currencies = this.currencies.map((item, i) =>
         i === index ? value : item
       );
@@ -71,7 +65,8 @@ class DocViewer extends LitElement {
       <account-table
         .h1=${this.h1}
         .h2=${this.h2}
-        .data=${this.alignedData} <!-- Pass combined aligned data -->
+        .array1=${this.alignedAccountTitles} <!-- Dynamically aligned accountTitles -->
+        .array2=${this.alignedCurrencies} <!-- Dynamically aligned currencies -->
         @add-row=${this.handleAddRow}
         @remove-row=${this.handleRemoveRow}
         @update-cell=${this.handleUpdateCell}
