@@ -1,0 +1,98 @@
+import { LitElement, html } from 'lit';
+
+class TextBoxManager extends LitElement {
+  static properties = {
+    contacts: { type: Array },
+  };
+
+  handleAdd() {
+    this.dispatchEvent(new CustomEvent('add-contact', { bubbles: true, composed: true }));
+  }
+
+  handleRemove(index) {
+    this.dispatchEvent(
+      new CustomEvent('remove-contact', {
+        detail: { index },
+        bubbles: true,
+        composed: true,
+      })
+    );
+  }
+
+  handleUpdate(index, value) {
+    this.dispatchEvent(
+      new CustomEvent('update-contact', {
+        detail: { index, value },
+        bubbles: true,
+        composed: true,
+      })
+    );
+  }
+
+  render() {
+    return html`
+      <div id="contacts-container">
+        ${this.contacts.map(
+          (contact, index) => html`
+            <div class="contact-box">
+              <input
+                type="text"
+                .value=${contact}
+                @input=${(e) => this.handleUpdate(index, e.target.value)}
+              />
+              <button @click=${this.handleAdd}>+</button>
+              ${index > 0
+                ? html`<button @click=${() => this.handleRemove(index)}>-</button>`
+                : ''}
+            </div>
+          `
+        )}
+      </div>
+    `;
+  }
+}
+
+customElements.define('textbox-manager', TextBoxManager);
+
+
+
+
+import { LitElement, html } from 'lit';
+
+class DocViewer extends LitElement {
+  static properties = {
+    contacts: { type: Array },
+  };
+
+  constructor() {
+    super();
+    this.contacts = ['']; // Initialize with one empty contact
+  }
+
+  addContact() {
+    this.contacts = [...this.contacts, ''];
+  }
+
+  removeContact(index) {
+    this.contacts = this.contacts.filter((_, i) => i !== index);
+  }
+
+  updateContact(index, value) {
+    this.contacts = this.contacts.map((contact, i) =>
+      i === index ? value : contact
+    );
+  }
+
+  render() {
+    return html`
+      <textbox-manager
+        .contacts=${this.contacts}
+        @add-contact=${this.addContact}
+        @remove-contact=${(e) => this.removeContact(e.detail.index)}
+        @update-contact=${(e) => this.updateContact(e.detail.index, e.detail.value)}
+      ></textbox-manager>
+    `;
+  }
+}
+
+customElements.define('doc-viewer', DocViewer);
