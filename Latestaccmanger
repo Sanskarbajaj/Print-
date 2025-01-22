@@ -1,0 +1,156 @@
+import { LitElement, html, css } from 'lit';
+
+export class AccountTable extends LitElement {
+  static properties = {
+    h1: { type: String }, // Heading for the first column
+    h2: { type: String }, // Heading for the second column
+    array1: { type: Array }, // First array of strings
+    array2: { type: Array }, // Second array of strings
+  };
+
+  handleAddRow() {
+    this.dispatchEvent(new CustomEvent('add-row', { bubbles: true, composed: true }));
+  }
+
+  handleRemoveRow(index) {
+    this.dispatchEvent(
+      new CustomEvent('remove-row', {
+        detail: { index },
+        bubbles: true,
+        composed: true,
+      })
+    );
+  }
+
+  handleUpdateCell(index, field, value) {
+    this.dispatchEvent(
+      new CustomEvent('update-cell', {
+        detail: { index, field, value },
+        bubbles: true,
+        composed: true,
+      })
+    );
+  }
+
+  render() {
+    return html`
+      <style>
+        table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+        th,
+        td {
+          border: 1px solid #ccc;
+          padding: 8px;
+          text-align: left;
+        }
+        button {
+          margin: 5px;
+        }
+      </style>
+
+      <table>
+        <thead>
+          <tr>
+            <th>${this.h1}</th>
+            <th>${this.h2}</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${this.array1.map(
+            (value1, index) => html`
+              <tr>
+                <td>
+                  <input
+                    type="text"
+                    .value=${value1}
+                    @input=${(e) =>
+                      this.handleUpdateCell(index, 'array1', e.target.value)}
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    .value=${this.array2[index] || ''}
+                    @input=${(e) =>
+                      this.handleUpdateCell(index, 'array2', e.target.value)}
+                  />
+                </td>
+                <td>
+                  <button @click=${() => this.handleRemoveRow(index)}>-</button>
+                </td>
+              </tr>
+            `
+          )}
+        </tbody>
+      </table>
+      <button @click=${this.handleAddRow}>Add Row</button>
+    `;
+  }
+}
+
+customElements.define('account-table', AccountTable);
+
+
+
+import { LitElement, html } from 'lit';
+
+class DocViewer extends LitElement {
+  static properties = {
+    h1: { type: String }, // Heading for the first array
+    h2: { type: String }, // Heading for the second array
+    array1: { type: Array }, // First array of strings
+    array2: { type: Array }, // Second array of strings
+  };
+
+  constructor() {
+    super();
+    this.h1 = 'Account Title';
+    this.h2 = 'Currency';
+    this.array1 = ['John', 'Jane']; // Initial values for the first array
+    this.array2 = ['USD', 'EUR']; // Initial values for the second array
+  }
+
+  handleAddRow() {
+    // Add an empty row to both arrays
+    this.array1 = [...this.array1, ''];
+    this.array2 = [...this.array2, ''];
+    console.log('Row added:', this.array1, this.array2);
+  }
+
+  handleRemoveRow(e) {
+    const index = e.detail.index;
+    // Remove the corresponding index from both arrays
+    this.array1 = this.array1.filter((_, i) => i !== index);
+    this.array2 = this.array2.filter((_, i) => i !== index);
+    console.log('Row removed at index', index, ':', this.array1, this.array2);
+  }
+
+  handleUpdateCell(e) {
+    const { index, field, value } = e.detail;
+    if (field === 'array1') {
+      this.array1 = this.array1.map((item, i) => (i === index ? value : item));
+    } else if (field === 'array2') {
+      this.array2 = this.array2.map((item, i) => (i === index ? value : item));
+    }
+    console.log('Updated cell:', field, 'at index', index, 'with value:', value);
+  }
+
+  render() {
+    return html`
+      <account-table
+        .h1=${this.h1}
+        .h2=${this.h2}
+        .array1=${this.array1}
+        .array2=${this.array2}
+        @add-row=${this.handleAddRow}
+        @remove-row=${this.handleRemoveRow}
+        @update-cell=${this.handleUpdateCell}
+      ></account-table>
+    `;
+  }
+}
+
+customElements.define('doc-viewer', DocViewer);
