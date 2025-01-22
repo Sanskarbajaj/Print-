@@ -1,0 +1,83 @@
+import { LitElement, html } from 'lit';
+
+class DocViewer extends LitElement {
+  static properties = {
+    h1: { type: String }, // Header for column 1
+    h2: { type: String }, // Header for column 2
+    accountTitles: { type: Array }, // First column data
+    currencies: { type: Array }, // Second column data
+  };
+
+  constructor() {
+    super();
+    this.h1 = 'Account Title';
+    this.h2 = 'Currency';
+
+    // Initialize arrays with uneven lengths
+    this.accountTitles = ['John', 'Jane', 'Doe']; // 3 items
+    this.currencies = ['USD', 'EUR']; // 2 items
+  }
+
+  // Align arrays dynamically
+  get alignedData() {
+    const maxLength = Math.max(this.accountTitles.length, this.currencies.length);
+
+    // Extend both arrays to the same length
+    const alignedTitles = [...this.accountTitles, ...Array(maxLength - this.accountTitles.length).fill('')];
+    const alignedCurrencies = [...this.currencies, ...Array(maxLength - this.currencies.length).fill('')];
+
+    // Return combined data for easier handling
+    return alignedTitles.map((title, index) => ({
+      accountTitle: title,
+      currency: alignedCurrencies[index],
+    }));
+  }
+
+  handleAddRow() {
+    // Add a new empty row
+    this.accountTitles = [...this.accountTitles, ''];
+    this.currencies = [...this.currencies, ''];
+    console.log('Row added:', this.accountTitles, this.currencies);
+  }
+
+  handleRemoveRow(e) {
+    const index = e.detail.index;
+    // Remove the corresponding index from both arrays
+    this.accountTitles = this.accountTitles.filter((_, i) => i !== index);
+    this.currencies = this.currencies.filter((_, i) => i !== index);
+    console.log('Row removed:', this.accountTitles, this.currencies);
+  }
+
+  handleUpdateCell(e) {
+    const { index, field, value } = e.detail;
+
+    if (field === 'accountTitles') {
+      // Update accountTitles immutably
+      this.accountTitles = this.accountTitles.map((item, i) =>
+        i === index ? value : item
+      );
+    } else if (field === 'currencies') {
+      // Update currencies immutably
+      this.currencies = this.currencies.map((item, i) =>
+        i === index ? value : item
+      );
+    }
+
+    console.log('Updated data:', { accountTitles: this.accountTitles, currencies: this.currencies });
+  }
+
+  render() {
+    return html`
+      <account-table
+        .h1=${this.h1}
+        .h2=${this.h2}
+        .data=${this.alignedData} <!-- Pass combined aligned data -->
+        @add-row=${this.handleAddRow}
+        @remove-row=${this.handleRemoveRow}
+        @update-cell=${this.handleUpdateCell}
+      ></account-table>
+    `;
+  }
+}
+
+customElements.define('doc-viewer', DocViewer);
