@@ -1,0 +1,63 @@
+import { fixture, assert } from '@open-wc/testing';
+import './TextBoxManager';
+
+describe('TextBoxManager Component', () => {
+  let element;
+
+  beforeEach(async () => {
+    element = await fixture('<text-box-manager></text-box-manager>');
+  });
+
+  it('should render correctly', () => {
+    const container = element.shadowRoot.querySelector('#contacts-container');
+    assert.exists(container, 'Contacts container is rendered');
+  });
+
+  it('should add a new contact when handleAdd is called', () => {
+    const addEventSpy = jest.spyOn(element, 'dispatchEvent');
+    element.contacts = ['123'];
+    element.handleAdd();
+    expect(addEventSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'add-contact',
+      })
+    );
+  });
+
+  it('should not add a contact if contacts length is 5 or more', () => {
+    element.contacts = ['123', '456', '789', '1011', '1213'];
+    const addEventSpy = jest.spyOn(element, 'dispatchEvent');
+    element.handleAdd();
+    expect(addEventSpy).not.toHaveBeenCalled();
+  });
+
+  it('should remove a contact when handleRemove is called', () => {
+    const removeEventSpy = jest.spyOn(element, 'dispatchEvent');
+    element.handleRemove(1);
+    expect(removeEventSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'remove-contact',
+        detail: { index: 1 },
+      })
+    );
+  });
+
+  it('should update a contact when handleUpdate is called', () => {
+    const updateEventSpy = jest.spyOn(element, 'dispatchEvent');
+    element.handleUpdate(1, '987');
+    expect(updateEventSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'update-contact',
+        detail: { index: 1, value: '987' },
+      })
+    );
+  });
+
+  it('should update the DOM when contacts are modified', async () => {
+    element.contacts = ['123', '456'];
+    await element.updateComplete;
+
+    const renderedContacts = element.shadowRoot.querySelectorAll('.contact-box');
+    expect(renderedContacts.length).toBe(2);
+  });
+});
