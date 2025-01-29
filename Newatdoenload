@@ -71,3 +71,14 @@ deleteAttachment(data) {
     console.log(`Deleting file: ${data.fileName}`);
     // Implement actual delete logic
 }
+
+
+
+firstUpdated() {
+    this.shadowRoot.querySelectorAll('sc-attachment-card').forEach(card => {
+        card.addEventListener('parent-attachment-action', (event) => {
+            console.log("Manually received event in Parent:", event.detail);
+            this.handleAttachmentAction(event);
+        });
+    });
+}
