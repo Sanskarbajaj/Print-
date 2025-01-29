@@ -1,0 +1,73 @@
+function handleOnSelect(e) {
+    console.log("Inside on select");
+    const c = Number(e.detail.value);
+
+    const eventName = c === 0 ? 'download' : c === 1 ? 'delete' : null;
+    if (!eventName) return;
+
+    // Dispatch an event to the closest `sc-attachment-card` instead of `window`
+    const event = new CustomEvent('attachment-action', {
+        detail: { action: eventName },
+        bubbles: true, // Let it bubble up to `sc-attachment-card`
+        composed: true
+    });
+
+    e.target.dispatchEvent(event); // Dispatch it from the dropdown
+}
+
+
+
+connectedCallback() {
+    super.connectedCallback();
+    this.addEventListener('attachment-action', this.handleDropdownAction);
+}
+
+disconnectedCallback() {
+    this.removeEventListener('attachment-action', this.handleDropdownAction);
+    super.disconnectedCallback();
+}
+
+handleDropdownAction(event) {
+    const { action } = event.detail;
+    console.log(`AttachmentCard received action: ${action}`);
+
+    // Forward the event to the parent component
+    this.dispatchEvent(new CustomEvent('parent-attachment-action', {
+        detail: { action, data: this.data },
+        bubbles: true, // Allow it to bubble up to the parent
+        composed: true
+    }));
+}
+
+
+
+connectedCallback() {
+    super.connectedCallback();
+    this.addEventListener('parent-attachment-action', this.handleAttachmentAction);
+}
+
+disconnectedCallback() {
+    this.removeEventListener('parent-attachment-action', this.handleAttachmentAction);
+    super.disconnectedCallback();
+}
+
+handleAttachmentAction(event) {
+    const { action, data } = event.detail;
+    console.log(`Parent received action: ${action} for attachment:`, data);
+
+    if (action === 'download') {
+        this.downloadAttachment(data);
+    } else if (action === 'delete') {
+        this.deleteAttachment(data);
+    }
+}
+
+downloadAttachment(data) {
+    console.log(`Downloading file: ${data.fileName}`);
+    // Implement actual download logic
+}
+
+deleteAttachment(data) {
+    console.log(`Deleting file: ${data.fileName}`);
+    // Implement actual delete logic
+}
