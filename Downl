@@ -1,0 +1,33 @@
+class AttachmentCard extends LitElement {
+    connectedCallback() {
+        super.connectedCallback();
+        window.addEventListener('download', this.downloadAttachment.bind(this));
+        window.addEventListener('delete', this.deleteAttachment.bind(this));
+    }
+
+    disconnectedCallback() {
+        window.removeEventListener('download', this.downloadAttachment.bind(this));
+        window.removeEventListener('delete', this.deleteAttachment.bind(this));
+        super.disconnectedCallback();
+    }
+
+    downloadAttachment() {
+        console.log("Downloading file...");
+        // Your download logic here
+    }
+
+    deleteAttachment() {
+        console.log("Deleting file...");
+        // Your delete logic here
+    }
+
+    render() {
+        return html`
+            <sc-card>
+                <div class="attachment-card-content">
+                    ${this.actions ? renderMoreActions(this.actions, false) : nothing}
+                </div>
+            </sc-card>
+        `;
+    }
+}
