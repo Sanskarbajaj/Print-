@@ -1,0 +1,72 @@
+import { LitElement, html, css } from 'lit';
+import { state, property } from 'lit/decorators.js';
+
+class DocViewer extends LitElement {
+  static styles = css`
+    .image-container {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .image-container img {
+      width: 100px;
+      height: 140px;
+      margin: 5px;
+      background: #f3f3f3;
+    }
+  `;
+
+  @property({ type: Number }) totalPages = 21; // Can change dynamically
+  @state() images = [];
+
+  constructor() {
+    super();
+    this.images = new Array(this.totalPages).fill('loading_placeholder.png');
+  }
+
+  async connectedCallback() {
+    super.connectedCallback();
+    this.loadImages();
+  }
+
+  async loadImages() {
+    const priorityPages = [1, 2, 4, 13]; // Prioritized pages
+    await this.fetchImages(priorityPages);
+
+    // Get all remaining pages
+    const allPages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
+    const remainingPages = allPages.filter(page => !priorityPages.includes(page));
+
+    // Fetch remaining pages in batches of 5
+    this.fetchInBatches(remainingPages, 5);
+  }
+
+  async fetchImages(pages) {
+    const response = await fetch(`/api/getImages`, {
+      method: 'POST',
+      body: JSON.stringify({ pages }),
+    });
+    const imageList = await response.json();
+
+    pages.forEach((page, index) => {
+      this.images[page - 1] = imageList[index]; // Place in correct index
+      this.requestUpdate(); // Trigger UI update
+    });
+  }
+
+  async fetchInBatches(pages, batchSize) {
+    for (let i = 0; i < pages.length; i += batchSize) {
+      const batch = pages.slice(i, i + batchSize);
+      await this.fetchImages(batch); // Fetch each batch
+    }
+  }
+
+  render() {
+    return html`
+      <div class="image-container">
+        ${this.images.map(src => html`<img src="${src}" alt="Page Image" />`)}
+      </div>
+    `;
+  }
+}
+
+customElements.define('doc-viewer', DocViewer);
