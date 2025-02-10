@@ -1,0 +1,48 @@
+function transformToNewFormat(originalData) {
+    return {
+        myActions: [
+            {
+                id: originalData?.caseAttributes?.id || "SCH167G210A1170724096121",
+                status: originalData?.status || "pending",
+                createdDate: originalData?.createdDate || "01 Aug 2024", // Replace dynamically if available
+                createdById: originalData?.createdBy || "1431830",
+                submittedForId: originalData?.submittedFor || "1431830",
+                managedBy: {
+                    type: "id",
+                    value: originalData?.managedBy || "1431830"
+                },
+                value: Object.keys(originalData?.clientAttributes || {}).map(key => ({
+                    id: key,
+                    value: originalData.clientAttributes[key] || null,
+                    label: formatLabel(key) // Function to format labels dynamically
+                }))
+            }
+        ]
+    };
+}
+
+// Helper function to format labels from keys
+function formatLabel(key) {
+    return key.replace(/([A-Z])/g, ' $1') // Add space before uppercase letters
+               .replace(/^./, str => str.toUpperCase()) // Capitalize first letter
+               .trim();
+}
+
+// Example Usage
+const originalData = {
+    "caseAttributes": {
+        "id": "CASE12345"
+    },
+    "status": "In Progress",
+    "createdDate": "10 Feb 2025",
+    "createdBy": "123456",
+    "submittedFor": "123456",
+    "managedBy": "123456",
+    "clientAttributes": {
+        "RequestType": "Account Opening - NTB",
+        "CountryOfAccount": "China"
+    }
+};
+
+const transformedData = transformToNewFormat(originalData);
+console.log(JSON.stringify(transformedData, null, 4));
