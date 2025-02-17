@@ -1,0 +1,113 @@
+import { LitElement, html } from 'lit';
+import { property } from 'lit/decorators.js';
+
+class DocViewer extends LitElement {
+  @property({ type: Object }) sections = {};
+
+  constructor() {
+    super();
+    // Initialize sections with empty objects
+    this.sections = {
+      section1: {},
+      section2: {},
+      section3: {},
+      section4: {}
+    };
+
+    // Initialize fields like your existing structure
+    this.section1 = [
+      { id: 'Name', label: 'Name' },
+      { id: 'RegistrationNumber', label: 'Registration Number' },
+      { id: 'CountryOfIncorporation', label: 'Country of Incorporation' },
+      { id: 'PrimaryContactPerson', label: 'Primary Contact Person' },
+      { id: 'ContactNumber', label: 'Contact Number' },
+      { id: 'ContactEmailAddress', label: 'Contact Email Address' },
+      { id: 'RegisteredAddress', label: 'Registered Address' },
+      { id: 'MailingAddress', label: 'Mailing Address' },
+      { id: 'SWIFTBICcode', label: 'SWIFT BIC code' }
+    ];
+
+    this.section3 = [
+      { id: 'GSTRegistrationFlag', label: 'GST Registration Flag', type: 'select', options: ['Yes', 'No'] },
+      { id: 'GSTCustomerType', label: 'GST Customer Type', type: 'select', options: ['Regular', 'Composition'] },
+      { id: 'GSTCustomerSpecialStatus', label: 'GST Customer Special Status', type: 'select', options: ['None', 'Exempt'] },
+      { id: 'PANNo', label: 'PAN No', type: 'text' },
+      { id: 'GSTRegistrationNumber', label: 'GST Registration Number', type: 'text' },
+      { id: 'MobileNumber', label: 'Mobile Number', type: 'text' },
+      { id: 'ContactDetailsForTechnicalReferrals', label: 'Contact Details for Technical Referrals' }
+    ];
+  }
+
+  // 🌟 Method to update field value inside a section
+  updateField(section, field, value) {
+    this.sections = {
+      ...this.sections,
+      [section]: {
+        ...this.sections[section],
+        [field]: value
+      }
+    };
+    console.log(`Updated ${section}:`, this.sections[section]);
+  }
+
+  // 🌟 Method to get the entire form data
+  getFormData() {
+    console.log('Full Form Data:', this.sections);
+    return this.sections;
+  }
+
+  // 🌟 Method to render fields dynamically
+  renderFields(sectionName, fields) {
+    return html`
+      ${fields.map((field) =>
+        field.type === 'select'
+          ? html`
+              <sc-select-input
+                id="${field.id}"
+                label="${field.label}"
+                .value="${this.sections[sectionName]?.[field.id] || ''}"
+                .options="${field.options}"
+                @sc-select="${(e) => this.updateField(sectionName, field.id, e.detail.value)}"
+              ></sc-select-input>
+            `
+          : html`
+              <sc-text-input
+                id="${field.id}"
+                label="${field.label}"
+                .value="${this.sections[sectionName]?.[field.id] || ''}"
+                @sc-input="${(e) => this.updateField(sectionName, field.id, e.detail.value)}"
+              ></sc-text-input>
+            `
+      )}
+    `;
+  }
+
+  // 🌟 Render each accordion with its fields
+  renderAccordion(sectionName, title, fields) {
+    return html`
+      <div class="accordion">
+        <div class="accordion-header">
+          <h3>${title}</h3>
+        </div>
+        <div class="accordion-body">
+          ${this.renderFields(sectionName, fields)}
+        </div>
+      </div>
+    `;
+  }
+
+  render() {
+    return html`
+      <div class="form-container">
+        ${this.renderAccordion('section1', 'Section 1: Personal Information', this.section1)}
+        ${this.renderAccordion('section3', 'Section 3: GST Information', this.section3)}
+      </div>
+
+      <div class="form-actions">
+        <button @click="${() => this.getFormData()}">Show Full Form Data</button>
+      </div>
+    `;
+  }
+}
+
+customElements.define('doc-viewer', DocViewer);
