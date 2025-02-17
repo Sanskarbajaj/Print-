@@ -1,0 +1,43 @@
+static properties = {
+  fields: { type: Array }
+};
+
+constructor() {
+  super();
+  this.fields = [
+    { id: 'Name', label: 'Name' },
+    { id: 'RegistrationNumber', label: 'Registration Number' },
+    { id: 'RegisteredAddress', label: 'Registered Address' },
+    { id: 'PrimaryContactPerson', label: 'Primary Contact Person' },
+    { id: 'MobileNumber', label: 'Mobile Number' },
+    { id: 'GSTRegistrationNumber', label: 'GST Registration Number' },
+    { id: 'Currency', label: 'Currency' }
+  ];
+}
+
+updateField(id, value) {
+  this[id] = value; // Dynamically update property
+  this.updateJson(id, value); // Keep existing behavior
+}
+
+handleSelection(id) {
+  this.updateSelection(id); // Existing logic
+}
+
+render() {
+  return html`
+    ${this.fields.map(
+      (field) => html`
+        <sc-text-input
+          id="${field.id}"
+          label="${field.label}"
+          value="${this[field.id] || ''}"
+          label-size="xs"
+          border-type="box"
+          @sc-input=${(e) => this.updateField(field.id, e.detail.value)}
+          @click=${() => this.handleSelection(field.id)}
+        ></sc-text-input>
+      `
+    )}
+  `;
+}
