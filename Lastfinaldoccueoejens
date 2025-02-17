@@ -1,0 +1,82 @@
+import { LitElement, html } from 'lit';
+import { property, state } from 'lit/decorators.js';
+
+class ExtractionTextFields extends LitElement {
+  @property({ type: Array }) extractions = [];
+  @state() formState = {};
+
+  connectedCallback() {
+    super.connectedCallback();
+    // Simulate the API response with your JSON data
+    this.extractions = [
+      {
+        pageNo: "1",
+        pageData: [
+          {
+            entities: [
+              { name: "Name", value: "IRIS RENEWABLES ALPHA ONE PRIVATE LIMITED" },
+              { name: "Registration Number", value: "05316/DL2024PTC427124" }
+            ]
+          }
+        ]
+      },
+      {
+        pageNo: "4",
+        pageData: [
+          {
+            entities: [
+              { name: "Director", value: "John Doe" }
+            ]
+          }
+        ]
+      }
+    ];
+
+    // Initialize form state
+    this.extractions.forEach(page => {
+      page.pageData.forEach(data => {
+        data.entities.forEach(entity => {
+          this.formState[entity.name] = entity.value;
+        });
+      });
+    });
+  }
+
+  handleInputChange(name, event) {
+    console.log(`Value changed for ${name}:`, event.target.value);
+    this.formState = { ...this.formState, [name]: event.target.value };
+  }
+
+  handleInputClick(name) {
+    console.log(`Clicked on ${name}`);
+  }
+
+  render() {
+    return html`
+      <div>
+        ${this.extractions.map(
+          page => html`
+            <h3>Page ${page.pageNo}</h3>
+            ${page.pageData.map(data =>
+              data.entities.map(entity => html`
+                <div style="margin-bottom: 20px;">
+                  <label for="${entity.name}">${entity.name}</label>
+                  <textarea 
+                    id="${entity.name}"
+                    rows="3"
+                    cols="50"
+                    .value="${this.formState[entity.name] || ''}"
+                    @click="${() => this.handleInputClick(entity.name)}"
+                    @input="${(e) => this.handleInputChange(entity.name, e)}"
+                  ></textarea>
+                </div>
+              `)
+            )}
+          `
+        )}
+      </div>
+    `;
+  }
+}
+
+customElements.define('extraction-text-fields', ExtractionTextFields);
