@@ -41,3 +41,72 @@ render() {
     )}
   `;
 }
+
+
+import { LitElement, html, css } from 'lit';
+import { property } from 'lit/decorators.js';
+
+class DocViewer extends LitElement {
+  // Properties
+  @property({ type: Array }) fields = [];
+  @property({ type: Object }) formData = {};
+
+  constructor() {
+    super();
+    // Fields configuration: Supports text and select
+    this.fields = [
+      { id: 'Name', label: 'Name', type: 'text' },
+      { id: 'RegistrationNumber', label: 'Registration Number', type: 'text' },
+      { id: 'Country', label: 'Country', type: 'select', options: ['India', 'USA', 'UK'] },
+      { id: 'AccountType', label: 'Account Type', type: 'select', options: ['Savings', 'Current', 'Business'] },
+      { id: 'Currency', label: 'Currency', type: 'select', options: ['INR', 'USD', 'EUR'] }
+    ];
+  }
+
+  // Method to handle input or dropdown change
+  updateField(id, value) {
+    this.formData = { ...this.formData, [id]: value };
+    this.updateJson(id, value); // Call existing updateJson method
+  }
+
+  // Method to handle selection click
+  handleSelection(id) {
+    this.updateSelection(id); // Call existing updateSelection method
+  }
+
+  // Render method with conditional input rendering
+  render() {
+    return html`
+      ${this.fields.map(
+        (field) => html`
+          ${field.type === 'text'
+            ? html`
+                <sc-text-input
+                  id="${field.id}"
+                  label="${field.label}"
+                  .value="${this.formData[field.id] || ''}"
+                  label-size="xs"
+                  border-type="box"
+                  @sc-input="${(e) => this.updateField(field.id, e.detail.value)}"
+                  @click="${() => this.handleSelection(field.id)}"
+                ></sc-text-input>
+              `
+            : html`
+                <sc-select-input
+                  id="${field.id}"
+                  label="${field.label}"
+                  .value="${this.formData[field.id] || ''}"
+                  .options="${field.options}"
+                  label-size="xs"
+                  border-type="box"
+                  @sc-select="${(e) => this.updateField(field.id, e.detail.value)}"
+                  @click="${() => this.handleSelection(field.id)}"
+                ></sc-select-input>
+              `}
+        `
+      )}
+    `;
+  }
+}
+
+customElements.define('doc-viewer', DocViewer);
