@@ -80,3 +80,129 @@ class ExtractionTextFields extends LitElement {
 }
 
 customElements.define('extraction-text-fields', ExtractionTextFields);
+
+
+
+
+
+
+
+
+
+import { LitElement, html } from 'lit';
+import { property, state } from 'lit/decorators.js';
+
+class PageSectionsForm extends LitElement {
+  @property({ type: Array }) extractions = [];
+  @state() formState = {
+    section1: {},
+    section2: {},
+    section3: {}
+  };
+
+  connectedCallback() {
+    super.connectedCallback();
+
+    // Simulated API response (Replace with actual API call)
+    this.extractions = [
+      {
+        pageNo: "1",
+        pageData: [
+          {
+            entities: [
+              { name: "Name", value: "IRIS RENEWABLES ALPHA ONE PRIVATE LIMITED" },
+              { name: "Director", value: "John Doe" }
+            ]
+          }
+        ]
+      },
+      {
+        pageNo: "4",
+        pageData: [
+          {
+            entities: [
+              { name: "Registration Number", value: "05316/DL2024PTC427124" }
+            ]
+          }
+        ]
+      },
+      {
+        pageNo: "13",
+        pageData: [
+          {
+            entities: [
+              { name: "GSTIN", value: "29ABCDE1234FZ1" },
+              { name: "Company Address", value: "123, Green Avenue, Delhi" }
+            ]
+          }
+        ]
+      }
+    ];
+
+    // Create an array for sections to loop through
+    const sections = ['section1', 'section2', 'section3'];
+
+    // Initialize formState using pageNo order
+    this.extractions.forEach((page, index) => {
+      const section = sections[index] || `section${index + 1}`; // Fallback for extra pages
+      this.formState[section] = {};
+
+      page.pageData.forEach(data => {
+        data.entities.forEach(entity => {
+          this.formState[section][entity.name] = entity.value || '';
+        });
+      });
+    });
+  }
+
+  handleInputChange(section, name, event) {
+    console.log(`Value changed in ${section} for ${name}:`, event.target.value);
+    this.formState = {
+      ...this.formState,
+      [section]: {
+        ...this.formState[section],
+        [name]: event.target.value
+      }
+    };
+  }
+
+  handleInputClick(section, name) {
+    console.log(`Clicked on ${name} in ${section}`);
+  }
+
+  renderSection(section, entities) {
+    return html`
+      <fieldset>
+        <legend><strong>${section}</strong></legend>
+        ${entities.map(name => html`
+          <div style="margin-bottom: 20px;">
+            <label for="${name}">${name}</label>
+            <textarea 
+              id="${name}"
+              rows="2"
+              cols="50"
+              .value="${this.formState[section]?.[name] || ''}"
+              @click="${() => this.handleInputClick(section, name)}"
+              @input="${(e) => this.handleInputChange(section, name, e)}"
+            ></textarea>
+          </div>
+        `)}
+      </fieldset>
+    `;
+  }
+
+  render() {
+    return html`
+      <div>
+        ${Object.keys(this.formState).map(section =>
+          this.renderSection(
+            section,
+            Object.keys(this.formState[section] || {})
+          )
+        )}
+      </div>
+    `;
+  }
+}
+
+customElements.define('page-sections-form', PageSectionsForm);
