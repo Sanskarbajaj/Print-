@@ -1,0 +1,45 @@
+import { LitElement, html, css } from 'lit';
+
+class DynamicAccordion extends LitElement {
+  static properties = {
+    formData: { type: Object }
+  };
+
+  constructor() {
+    super();
+    this.formData = {}; // Populate this from API response
+  }
+
+  handleInputChange(section, key, event) {
+    this.formData[section][key].value = event.target.value;
+    this.requestUpdate(); // Trigger re-render
+  }
+
+  render() {
+    return html`
+      <div>
+        ${Object.keys(this.formData).map(section => html`
+          <details>
+            <summary>${section}</summary>
+            <div>
+              ${Object.keys(this.formData[section]).map(fieldKey => {
+                const field = this.formData[section][fieldKey];
+                return html`
+                  <label>${field.label}</label>
+                  <input 
+                    type="text" 
+                    .value=${field.value || ''} 
+                    @input=${(e) => this.handleInputChange(section, fieldKey, e)}
+                  />
+                  <br/>
+                `;
+              })}
+            </div>
+          </details>
+        `)}
+      </div>
+    `;
+  }
+}
+
+customElements.define('dynamic-accordion', DynamicAccordion);
