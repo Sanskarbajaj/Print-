@@ -1,0 +1,12 @@
+it('should return caseId from navigation context', () => {
+  const component = new YourComponent();
+  component._navigationContextConsumer = {
+    value: {
+      params: {
+        id: 'mock-case-id'
+      }
+    }
+  };
+
+  expect(component.caseId).toBe('mock-case-id');
+});
