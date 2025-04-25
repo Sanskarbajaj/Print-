@@ -1,0 +1,70 @@
+import React, { useState } from 'react';
+
+function App() {
+  const [formData, setFormData] = useState({ name: '', email: '' });
+  const [count, setCount] = useState(0);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    console.log(`${name}: ${value}`);
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const containerStyle = {
+    padding: '20px',
+    fontFamily: 'Arial',
+    textAlign: 'center',
+  };
+
+  const inputStyle = {
+    padding: '10px',
+    margin: '10px',
+    width: '200px',
+  };
+
+  const buttonStyle = {
+    padding: '10px 20px',
+    marginTop: '20px',
+    cursor: 'pointer',
+  };
+
+  return (
+    <div style={containerStyle}>
+      <h2>React Single Page Demo</h2>
+
+      <input
+        style={inputStyle}
+        type="text"
+        name="name"
+        placeholder="Enter your name"
+        value={formData.name}
+        onChange={handleChange}
+      />
+      <br />
+      <input
+        style={inputStyle}
+        type="email"
+        name="email"
+        placeholder="Enter your email"
+        value={formData.email}
+        onChange={handleChange}
+      />
+
+      <h3>Counter: {count}</h3>
+      <button style={buttonStyle} onClick={() => setCount(count + 1)}>
+        Increment
+      </button>
+
+      <div style={{ marginTop: '30px' }}>
+        <img
+          src="https://via.placeholder.com/300"
+          alt="Sample"
+          width="300"
+          height="200"
+        />
+      </div>
+    </div>
+  );
+}
+
+export default App;
