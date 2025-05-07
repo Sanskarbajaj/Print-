@@ -1,0 +1,110 @@
+import React, { useState } from 'react';
+import {
+  TextField,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Tooltip,
+  IconButton,
+  makeStyles,
+  Typography,
+  Box
+} from '@material-ui/core';
+import PersonIcon from '@material-ui/icons/Person';
+import UserCard from './UserCard';
+
+const useStyles = makeStyles((theme) => ({
+  icon: {
+    fontSize: 40,
+    cursor: 'pointer',
+    transition: 'color 0.3s',
+    '&:hover': {
+      color: 'blue'
+    }
+  },
+  container: {
+    padding: theme.spacing(3)
+  },
+  table: {
+    marginTop: theme.spacing(3)
+  }
+}));
+
+const Dashboard = () => {
+  const classes = useStyles();
+  const [name, setName] = useState('');
+
+  const users = [
+    { id: 1, name: 'Alice', age: 25 },
+    { id: 2, name: 'Bob', age: 30 },
+  ];
+
+  return (
+    <Box className={classes.container}>
+      <Typography variant="h5" gutterBottom>
+        React + Material UI v4 Demo
+      </Typography>
+
+      <TextField
+        label="Enter Name"
+        variant="outlined"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
+
+      <Tooltip title="Click the icon" arrow>
+        <IconButton onClick={() => alert('Icon Clicked!')}>
+          <PersonIcon className={classes.icon} />
+        </IconButton>
+      </Tooltip>
+
+      <Table className={classes.table}>
+        <TableHead>
+          <TableRow>
+            <TableCell>ID</TableCell>
+            <TableCell>Name</TableCell>
+            <TableCell>Age</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {users.map((user) => (
+            <TableRow key={user.id}>
+              <TableCell>{user.id}</TableCell>
+              <TableCell>{user.name}</TableCell>
+              <TableCell>{user.age}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+
+      <Box mt={4}>
+        <UserCard name={name || 'Guest'} />
+      </Box>
+    </Box>
+  );
+};
+
+export default Dashboard;
+
+
+
+
+import React from 'react';
+import { Card, CardContent, Typography } from '@material-ui/core';
+
+const UserCard = ({ name }) => {
+  return (
+    <Card>
+      <CardContent>
+        <Typography variant="h6">Welcome, {name}!</Typography>
+        <Typography variant="body2">This is a child component.</Typography>
+      </CardContent>
+    </Card>
+  );
+};
+
+export default UserCard;
+
+
