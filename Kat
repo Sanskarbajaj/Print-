@@ -1,0 +1,67 @@
+import React, { useState } from 'react';
+import './Dashboard.css';
+import UserCard from './UserCard';
+
+const Dashboard = () => {
+  const [name, setName] = useState('');
+  const users = [
+    { id: 1, name: 'Alice', age: 25 },
+    { id: 2, name: 'Bob', age: 30 },
+  ];
+
+  return (
+    <div className="dashboard">
+      <h2>React Dashboard</h2>
+
+      <input
+        type="text"
+        placeholder="Enter your name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        className="text-input"
+      />
+
+      <button
+        className="click-button"
+        onClick={() => alert('Button clicked!')}
+        onMouseEnter={(e) => (e.target.style.background = '#555')}
+        onMouseLeave={(e) => (e.target.style.background = '#333')}
+      >
+        Click Me
+      </button>
+
+      <table className="user-table">
+        <thead>
+          <tr>
+            <th>ID</th><th>Name</th><th>Age</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.map(user => (
+            <tr key={user.id}>
+              <td>{user.id}</td><td>{user.name}</td><td>{user.age}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <UserCard name={name || 'Guest'} />
+    </div>
+  );
+};
+
+export default Dashboard;
+
+import React from 'react';
+import './UserCard.css';
+
+const UserCard = ({ name }) => {
+  return (
+    <div className="user-card">
+      <h3>Welcome, {name}!</h3>
+      <p>This is a child component with data passed from the parent.</p>
+    </div>
+  );
+};
+
+export default UserCard;
