@@ -1,0 +1,91 @@
+import React from 'react';
+import { Card, Avatar, Tag } from 'antd';
+import { UserOutlined, MailOutlined } from '@ant-design/icons';
+
+const UserCard = ({ user }) => {
+  return (
+    <Card
+      style={{ width: 300 }}
+      cover={<img alt="user-cover" src={user.coverImg} />}
+      actions={[
+        <MailOutlined key="email" />,
+      ]}
+    >
+      <Card.Meta
+        avatar={<Avatar src={user.avatar} icon={!user.avatar && <UserOutlined />} />}
+        title={user.name}
+        description={user.email}
+      />
+      <div style={{ marginTop: 12 }}>
+        {user.tags?.map((tag, index) => (
+          <Tag key={index} color="blue">{tag}</Tag>
+        ))}
+      </div>
+    </Card>
+  );
+};
+
+export default UserCard;
+
+
+
+
+
+import React, { useEffect, useState } from 'react';
+import { Row, Col, Typography, Spin } from 'antd';
+import UserCard from './UserCard';
+
+const { Title } = Typography;
+
+const Dashboard = () => {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Mock fetch (you can replace with actual API)
+    setTimeout(() => {
+      setUsers([
+        {
+          name: 'John Doe',
+          email: 'john@example.com',
+          avatar: '',
+          coverImg: 'https://via.placeholder.com/300x100',
+          tags: ['Admin', 'Active'],
+        },
+        {
+          name: 'Jane Smith',
+          email: 'jane@example.com',
+          avatar: '',
+          coverImg: 'https://via.placeholder.com/300x100',
+          tags: ['User', 'Pending'],
+        },
+      ]);
+      setLoading(false);
+    }, 1000);
+  }, []);
+
+  if (loading) return <Spin size="large" />;
+
+  return (
+    <div style={{ padding: 24 }}>
+      <Title level={2}>User Dashboard</Title>
+      <Row gutter={[16, 16]}>
+        {users.map((user, index) => (
+          <Col key={index} xs={24} sm={12} md={8} lg={6}>
+            <UserCard user={user} />
+          </Col>
+        ))}
+      </Row>
+    </div>
+  );
+};
+
+export default Dashboard;
+
+
+
+
+
+npm install antd
+import 'antd/dist/antd.min.css';
+
