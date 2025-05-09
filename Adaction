@@ -77,3 +77,12 @@ export const tableConf = [
     cell: (row) => row.action, // Render dynamic action HTML
   },
 ];
+
+
+
+<!-- Ant Design CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/antd@5.25.0/dist/antd.min.css" />
+
+<!-- Ant Design JS (UMD build) -->
+<script src="https://cdn.jsdelivr.net/npm/antd@5.25.0/dist/antd.min.js"></script>
+
