@@ -1,0 +1,18 @@
+Hi [Manager’s Name],
+
+I’ve tried multiple approaches to get Ant Design working in our current setup (Preact + Micro Frontend), but it’s not compatible due to technical limitations. Here’s what I did:
+	1.	Forced the latest react-is version via package.json — didn’t solve the ForwardRef error.
+	2.	Removed plugins and downgraded React dependencies — still failed.
+	3.	Tried loading AntD via CDN — files loaded, but components didn’t render.
+	4.	Verified we’re using React 19 — the issue exists even in React 17+.
+
+Root Cause:
+Ant Design is CommonJS-based and doesn’t play well with our ESM-only, Preact + Web Components setup.
+
+Recommendation:
+We should switch to an ESM-friendly UI library like Shoelace or Mantine, or use a separate React-based MFE just for AntD.
+
+Let me know how you’d like to proceed.
+
+Best,
+[Your Name]
