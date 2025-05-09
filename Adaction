@@ -129,3 +129,42 @@ export default Dashboard;
 <script src="https://cdn.jsdelivr.net/npm/antd@4.24.13/dist/antd.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/antd@4.24.13/dist/antd.min.js"></script>
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Ant Design CDN Test</title>
+
+    <!-- Ant Design CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/antd@4.24.13/dist/antd.min.css"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <!-- Ant Design UMD build -->
+    <script src="https://cdn.jsdelivr.net/npm/antd@4.24.13/dist/antd.min.js"></script>
+
+    <script>
+      window.addEventListener('DOMContentLoaded', () => {
+        console.log('window.antd:', window.antd); // ✅ should be an object
+
+        const { Button } = window.antd || {};
+        if (Button) {
+          const btn = document.createElement('button');
+          btn.className = 'ant-btn ant-btn-primary';
+          btn.innerText = 'AntD via CDN works!';
+          document.getElementById('root').appendChild(btn);
+        } else {
+          document.getElementById('root').innerText = 'AntD failed to load.';
+        }
+      });
+    </script>
+  </body>
+</html>
