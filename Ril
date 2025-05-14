@@ -1,0 +1,50 @@
+import { LitElement, html } from 'lit';
+import { customElement } from 'lit/decorators.js';
+import { createComponent } from '@lit-labs/react';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom/client';
+import { HelloReact } from './HelloReact';
+
+// Create a custom element for React
+const ReactWrapper = createComponent({
+  tagName: 'hello-react',
+  elementClass: LitElement,
+  react: React,
+  reactDOM: ReactDOM,
+  component: HelloReact,
+  events: {}
+});
+
+customElements.define('hello-react', ReactWrapper);
+
+@customElement('lit-with-react')
+export class LitWithReact extends LitElement {
+  render() {
+    return html`<hello-react name="Lit in React App"></hello-react>`;
+  }
+}
+
+
+import React, { useContext } from 'react';
+import 'antd/dist/antd.min.css';
+import { UserContext } from '@scdevkit/service-bench-core/react/context.js';
+import { HomeContent } from './components/HomeContent';
+import './components/LitWithReact'; // Import to register <lit-with-react>
+
+const Home = () => {
+  const user = useContext(UserContext);
+
+  return (
+    <sc-landing-layout>
+      <div slot="banner-title">
+        Welcome to Service Bench, {user?.firstName} {user?.lastName}
+      </div>
+
+      <div slot="banner-body">
+        <lit-with-react></lit-with-react>
+      </div>
+    </sc-landing-layout>
+  );
+};
+
+export default Home;
