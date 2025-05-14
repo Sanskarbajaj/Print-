@@ -1,0 +1,5 @@
+Today, I explored integrating Lit components within our React project. Initially, I created a Lit component inside the React project that successfully rendered a React component. However, I encountered a forwardRef issue when using Ant Design components.
+
+To isolate the issue, I also created a standalone Lit project with a wrapper component attempting to render a React component. While the setup produced the expected JavaScript output, it threw JSX-related errors. I tried resolving this by adding necessary dependencies and configuring JSX extension support, but it’s still not fully working.
+
+I’ll continue debugging and exploring potential solutions.
