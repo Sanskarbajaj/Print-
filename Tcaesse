@@ -1,0 +1,45 @@
+@ExtendWith(MockitoExtension.class)
+public class SCBEDTUserProfileMaintenanceDAOImplTest {
+
+    @InjectMocks
+    private SCBEDTUserProfileMaintenanceDAOImpl dao;
+
+    @Mock
+    private HibernateTemplate hibernateTemplate;
+
+    @Mock
+    private SCBEDTUserProfileMaintenanceDAO scbedtDao;
+
+    @Test
+    public void testGetEDIUserProfileHistoList() {
+        List<EDIUserProfileHistoEO> mockList = new ArrayList<>();
+        when(hibernateTemplate.findByNamedQuery(anyString(), any(Object[].class))).thenReturn(mockList);
+
+        List<EDIUserProfileHistoEO> result = dao.getEDIUserProfileHistoList("BANK1", "CTY1", "KEY1", "USER1");
+
+        assertNotNull(result);
+        assertEquals(mockList, result);
+    }
+
+    @Test
+    public void testGetEDIUserProfileHistoForInput() {
+        List<EDIUserProfileHistoEO> mockList = new ArrayList<>();
+        when(hibernateTemplate.findByNamedQuery(anyString(), any(Object[].class))).thenReturn(mockList);
+
+        List<EDIUserProfileHistoEO> result = dao.getEDIUserProfileHistoForInput("PARAM1", "BANK1", "CTY1", "KEY1", "USER1");
+
+        assertNotNull(result);
+        assertEquals(mockList, result);
+    }
+
+    @Test
+    public void testGetEDIUserProfileHistoForRelease() {
+        List<EDIUserProfileHistoEO> mockList = new ArrayList<>();
+        when(hibernateTemplate.findByNamedQuery(anyString(), any(Object[].class))).thenReturn(mockList);
+
+        List<EDIUserProfileHistoEO> result = dao.getEDIUserProfileHistoForRelease("PARAM1", "BANK1", "CTY1", "KEY1", "USER1");
+
+        assertNotNull(result);
+        assertEquals(mockList, result);
+    }
+}
