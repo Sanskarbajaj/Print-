@@ -1,0 +1,56 @@
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SCBDBCategoryTxnListTableTest {
+
+    @Test
+    public void testConstructorWithCols() {
+        SCBDBCategoryTxnListTable table = new SCBDBCategoryTxnListTable(3);
+        assertNotNull(table);
+    }
+
+    @Test
+    public void testConstructorWithRowsAndCols() {
+        SCBDBCategoryTxnListTable table = new SCBDBCategoryTxnListTable(2, 3);
+        assertNotNull(table);
+    }
+
+    @Test
+    public void testConstructorWithSCBTable() {
+        SCBTable scbTable = new SCBTable(); // Assuming a public no-arg constructor exists
+        SCBDBCategoryTxnListTable table = new SCBDBCategoryTxnListTable(scbTable);
+        assertNotNull(table);
+    }
+
+    @Test
+    public void testSetAndGetColNameColl() {
+        SCBDBCategoryTxnListTable table = new SCBDBCategoryTxnListTable(3);
+        String[] cols = {"ID", "Name", "Value"};
+        table.setColNameColl(cols);
+        assertArrayEquals(cols, table.getColNameColl());
+    }
+
+    @Test
+    public void testSetAndGetSelectableColIdColl() {
+        SCBDBCategoryTxnListTable table = new SCBDBCategoryTxnListTable(3);
+        int[] ids = {0, 2};
+        table.setSelectableColIdColl(ids);
+        assertArrayEquals(ids, table.getSelectableColIdColl());
+    }
+
+    @Test
+    public void testSetAndGetTotalNoOfRecords() {
+        SCBDBCategoryTxnListTable table = new SCBDBCategoryTxnListTable(3);
+        Long total = 100L;
+        table.setTotalNoOfRecords(total);
+        assertEquals(total, table.getTotalNoOfRecords());
+    }
+
+    @Test
+    public void testDefaultValues() {
+        SCBDBCategoryTxnListTable table = new SCBDBCategoryTxnListTable(2);
+        assertNull(table.getColNameColl());
+        assertNull(table.getSelectableColIdColl());
+        assertNull(table.getTotalNoOfRecords());
+    }
+}
