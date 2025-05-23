@@ -1,0 +1,71 @@
+@Test
+public void testSCBRSBuyerSetupHistEO() {
+    final Validator pojoValidator1 = ValidatorBuilder.create()
+        .with(new SetterTester())
+        .with(new GetterTester())
+        .build();
+    pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBRSBuyerSetupHistEO.class));
+}
+
+@Test
+public void testSCBRSBuyerSetupHistPK() {
+    final Validator pojoValidator1 = ValidatorBuilder.create()
+        .with(new SetterTester())
+        .with(new GetterTester())
+        .build();
+    pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBRSBuyerSetupHistPK.class));
+}
+
+@Test
+public void testSCBRSBuyerSetupMstEO() {
+    final Validator pojoValidator1 = ValidatorBuilder.create()
+        .with(new SetterTester())
+        .with(new GetterTester())
+        .build();
+    pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBRSBuyerSetupMstEO.class));
+}
+
+@Test
+public void testSCBRSBuyerSetupMstPK() {
+    final Validator pojoValidator1 = ValidatorBuilder.create()
+        .with(new SetterTester())
+        .with(new GetterTester())
+        .build();
+    pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBRSBuyerSetupMstPK.class));
+}
+
+@Test
+public void testSCBRSCoBorrowerHistEO() {
+    final Validator pojoValidator1 = ValidatorBuilder.create()
+        .with(new SetterTester())
+        .with(new GetterTester())
+        .build();
+    pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBRSCoBorrowerHistEO.class));
+}
+
+@Test
+public void testSCBRSCoBorrowerHistPK() {
+    final Validator pojoValidator1 = ValidatorBuilder.create()
+        .with(new SetterTester())
+        .with(new GetterTester())
+        .build();
+    pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBRSCoBorrowerHistPK.class));
+}
+
+@Test
+public void testSCBRSCoBorrowerMstEO() {
+    final Validator pojoValidator1 = ValidatorBuilder.create()
+        .with(new SetterTester())
+        .with(new GetterTester())
+        .build();
+    pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBRSCoBorrowerMstEO.class));
+}
+
+@Test
+public void testSCBRSCoBorrowerMstPK() {
+    final Validator pojoValidator1 = ValidatorBuilder.create()
+        .with(new SetterTester())
+        .with(new GetterTester())
+        .build();
+    pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBRSCoBorrowerMstPK.class));
+}
