@@ -1,0 +1,40 @@
+import com.openpojo.reflection.impl.PojoClassFactory;
+import com.openpojo.validation.Validator;
+import com.openpojo.validation.ValidatorBuilder;
+import com.openpojo.validation.test.impl.GetterTester;
+import com.openpojo.validation.test.impl.SetterTester;
+import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.List;
+
+public class PojoValidatorTest {
+
+    private static final List<Class<?>> POJO_CLASSES = Arrays.asList(
+        SCBControlAccountMonitoringEO.class,
+        SCBControlAccountMonitoringEOPK.class,
+        SCBFlrCoreBankingDalyEO.class,
+        SCBFlrCoreBankingDtlsEO.class,
+        SCBFlrCoreBankingDtlsEOPK.class,
+        SCBFlrCoreBankingEO.class,
+        SCBFlrCoreBankingPK.class,
+        SCBSciCustLeMainProfileEO.class,
+        SCBSciFatcaDtlsEO.class,
+        SCBSciFatcaDtlsPK.class,
+        SCBSciTaxDtlsEO.class,
+        SCBSciTaxDtlsPK.class,
+        SCBSCITPCrossRefEO.class
+    );
+
+    @Test
+    public void testPojoStructureAndBehavior() {
+        Validator validator = ValidatorBuilder.create()
+            .with(new GetterTester())
+            .with(new SetterTester())
+            .build();
+
+        for (Class<?> pojoClass : POJO_CLASSES) {
+            validator.validate(PojoClassFactory.getPojoClass(pojoClass));
+        }
+    }
+}
