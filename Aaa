@@ -1,0 +1,443 @@
+import com.openpojo.reflection.impl.PojoClassFactory;
+import com.openpojo.validation.Validator;
+import com.openpojo.validation.ValidatorBuilder;
+import com.openpojo.validation.test.impl.GetterTester;
+import com.openpojo.validation.test.impl.SetterTester;
+import org.junit.jupiter.api.Test;
+
+public class PojoValidationTest2 {
+
+    @Test public void testSCBBankDataSetupHistEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBBankDataSetupHistEO.class));
+    }
+
+    @Test public void testSCBBankDataSetupMasterEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBBankDataSetupMasterEO.class));
+    }
+
+    @Test public void testSCBBankDataSetupMasterPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBBankDataSetupMasterPK.class));
+    }
+
+    @Test public void testSCBBankGroupBanksHistEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBBankGroupBanksHistEO.class));
+    }
+
+    @Test public void testSCBBankGroupBanksHistPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBBankGroupBanksHistPK.class));
+    }
+
+    @Test public void testSCBBankGroupBanksMstEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBBankGroupBanksMstEO.class));
+    }
+
+    @Test public void testSCBBankGroupBanksMstPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBBankGroupBanksMstPK.class));
+    }
+
+    @Test public void testSCBBankGroupEntityHistEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBBankGroupEntityHistEO.class));
+    }
+
+    @Test public void testSCBBankGroupEntityHistPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBBankGroupEntityHistPK.class));
+    }
+
+    @Test public void testSCBBankGroupEntityMstEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBBankGroupEntityMstEO.class));
+    }
+
+    @Test public void testSCBBankGroupEntityMstPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBBankGroupEntityMstPK.class));
+    }
+
+    @Test public void testSCBBankGroupSBLHistEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBBankGroupSBLHistEO.class));
+    }
+
+    @Test public void testSCBBankGroupSBLHistPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBBankGroupSBLHistPK.class));
+    }
+
+    @Test public void testSCBBankGroupSBLMstEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBBankGroupSBLMstEO.class));
+    }
+
+    @Test public void testSCBBankGroupSBLMstPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBBankGroupSBLMstPK.class));
+    }
+
+    @Test public void testSCBBankLimitSetupMasterEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBBankLimitSetupMasterEO.class));
+    }
+
+    @Test public void testSCBBankLimitSetupMasterPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBBankLimitSetupMasterPK.class));
+    }
+
+    @Test public void testSCBBankLimitSetupTxnEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBBankLimitSetupTxnEO.class));
+    }
+
+    @Test public void testSCBBankLimitSetupTxnPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBBankLimitSetupTxnPK.class));
+    }
+
+    @Test public void testSCBBankRefLimitSetupMasterPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBBankRefLimitSetupMasterPK.class));
+    }
+
+    @Test public void testSCBCAMasterEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBCAMasterEO.class));
+    }
+
+    @Test public void testSCBCAPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBCAPK.class));
+    }
+
+    @Test public void testSCBCATxnEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBCATxnEO.class));
+    }
+
+    @Test public void testSCBCATxnPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBCATxnPK.class));
+    }
+
+    @Test public void testSCBCorporateMasterEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBCorporateMasterEO.class));
+    }
+
+    @Test public void testSCBCorporatePK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBCorporatePK.class));
+    }
+
+    @Test public void testSCBCorporateTxnEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBCorporateTxnEO.class));
+    }
+
+    @Test public void testSCBCorporateTxnPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBCorporateTxnPK.class));
+    }
+
+    @Test public void testSCBInvestorFatcaDtlsEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBInvestorFatcaDtlsEO.class));
+    }
+
+    @Test public void testSCBInvestorFatcaDtlsHistEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBInvestorFatcaDtlsHistEO.class));
+    }
+
+    @Test public void testSCBInvestorFatcaDtlsPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBInvestorFatcaDtlsPK.class));
+    }
+
+    @Test public void testSCBInvestorGeneralDtlsEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBInvestorGeneralDtlsEO.class));
+    }
+
+    @Test public void testSCBInvestorGeneralDtlsHistEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBInvestorGeneralDtlsHistEO.class));
+    }
+
+    @Test public void testSCBInvestorGeneralDtlsHistPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBInvestorGeneralDtlsHistPK.class));
+    }
+
+    @Test public void testSCBInvestorGeneralDtlsPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBInvestorGeneralDtlsPK.class));
+    }
+
+    @Test public void testSCBInvestorProgramDtlsEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBInvestorProgramDtlsEO.class));
+    }
+
+    @Test public void testSCBInvestorProgramDtlsHistEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBInvestorProgramDtlsHistEO.class));
+    }
+
+    @Test public void testSCBInvestorProgramDtlsHistPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBInvestorProgramDtlsHistPK.class));
+    }
+
+    @Test public void testSCBInvestorProgramDtlsPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBInvestorProgramDtlsPK.class));
+    }
+
+    @Test public void testSCBLtpLPRateEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBLtpLPRateEO.class));
+    }
+
+    @Test public void testSCBLtpLPRatePK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBLtpLPRatePK.class));
+    }
+
+    @Test public void testSCBLtpLPRateTxnEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBLtpLPRateTxnEO.class));
+    }
+
+    @Test public void testSCBLtpLPRateTxnPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBLtpLPRateTxnPK.class));
+    }
+
+    @Test public void testSCBInsuranceMasterEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBInsuranceMasterEO.class));
+    }
+
+    @Test public void testSCBInsurancePK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBInsurancePK.class));
+    }
+
+    @Test public void testSCBInsuranceTxnEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBInsuranceTxnEO.class));
+    }
+
+    @Test public void testSCBInsuranceTxnPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBInsuranceTxnPK.class));
+    }
+    @Test public void testSCBCorpRiskInvestorMasterEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBCorpRiskInvestorMasterEO.class));
+    }
+
+    @Test public void testSCBCorpRiskInvestorMasterPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBCorpRiskInvestorMasterPK.class));
+    }
+
+    @Test public void testSCBCorpRiskInvestorTxnEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBCorpRiskInvestorTxnEO.class));
+    }
+
+    @Test public void testSCBCorpRiskInvestorTxnPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBCorpRiskInvestorTxnPK.class));
+    }
+
+    @Test public void testSCBCorpRiskObligorMasterEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBCorpRiskObligorMasterEO.class));
+    }
+
+    @Test public void testSCBCorpRiskObligorMasterPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBCorpRiskObligorMasterPK.class));
+    }
+
+    @Test public void testSCBCorpRiskObligorTxnEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBCorpRiskObligorTxnEO.class));
+    }
+
+    @Test public void testSCBCorpRiskObligorTxnPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBCorpRiskObligorTxnPK.class));
+    }
+
+    @Test public void testSCBCountryMasterEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBCountryMasterEO.class));
+    }
+
+    @Test public void testSCBCountryPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBCountryPK.class));
+    }
+
+    @Test public void testSCBCountryTxnEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBCountryTxnEO.class));
+    }
+
+    @Test public void testSCBCountryTxnPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBCountryTxnPK.class));
+    }
+
+    @Test public void testSCBCRPLimitSetupHistEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBCRPLimitSetupHistEO.class));
+    }
+
+    @Test public void testSCBCRPLimitSetupHistPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBCRPLimitSetupHistPK.class));
+    }
+
+    @Test public void testSCBCRPLimitSetupMstEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBCRPLimitSetupMstEO.class));
+    }
+
+    @Test public void testSCBCRPLimitSetupPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBCRPLimitSetupPK.class));
+    }
+
+    @Test public void testSCBCtyLimitMasterEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBCtyLimitMasterEO.class));
+    }
+
+    @Test public void testSCBCtyLimitMstPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBCtyLimitMstPK.class));
+    }
+
+    @Test public void testSCBCtyLimitTxnEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBCtyLimitTxnEO.class));
+    }
+
+    @Test public void testSCBCtyLimitTxnPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBCtyLimitTxnPK.class));
+    }
+
+    @Test public void testSCBGUTMaintenanceHistEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBGUTMaintenanceHistEO.class));
+    }
+
+    @Test public void testSCBGUTMaintenanceHistPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBGUTMaintenanceHistPK.class));
+    }
+
+    @Test public void testSCBGUTMaintenanceMstEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBGUTMaintenanceMstEO.class));
+    }
+
+    @Test public void testSCBGUTMaintenanceMstPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBGUTMaintenanceMstPK.class));
+    }
+    @Test public void testSCBInvestorFatcaDtlsEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBInvestorFatcaDtlsEO.class));
+    }
+
+    @Test public void testSCBInvestorFatcaDtlsHistEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBInvestorFatcaDtlsHistEO.class));
+    }
+
+    @Test public void testSCBInvestorFatcaDtlsPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBInvestorFatcaDtlsPK.class));
+    }
+
+    @Test public void testSCBInvestorGeneralDtlsEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBInvestorGeneralDtlsEO.class));
+    }
+
+    @Test public void testSCBInvestorGeneralDtlsHistEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBInvestorGeneralDtlsHistEO.class));
+    }
+
+    @Test public void testSCBInvestorGeneralDtlsHistPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBInvestorGeneralDtlsHistPK.class));
+    }
+
+    @Test public void testSCBInvestorGeneralDtlsPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBInvestorGeneralDtlsPK.class));
+    }
+
+    @Test public void testSCBInvestorProgramDtlsEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBInvestorProgramDtlsEO.class));
+    }
+
+    @Test public void testSCBInvestorProgramDtlsHistEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBInvestorProgramDtlsHistEO.class));
+    }
+
+    @Test public void testSCBInvestorProgramDtlsHistPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBInvestorProgramDtlsHistPK.class));
+    }
+
+    @Test public void testSCBInvestorProgramDtlsPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBInvestorProgramDtlsPK.class));
+    }
+
+    @Test public void testSCBLtpLPRateEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBLtpLPRateEO.class));
+    }
+
+    @Test public void testSCBLtpLPRatePK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBLtpLPRatePK.class));
+    }
+
+    @Test public void testSCBLtpLPRateTxnEO() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBLtpLPRateTxnEO.class));
+    }
+
+    @Test public void testSCBLtpLPRateTxnPK() {
+        final Validator pojoValidator1 = ValidatorBuilder.create().with(new SetterTester()).with(new GetterTester()).build();
+        pojoValidator1.validate(PojoClassFactory.getPojoClass(SCBLtpLPRateTxnPK.class));
+    }
+}
+}
+}
+
+
+
+}
