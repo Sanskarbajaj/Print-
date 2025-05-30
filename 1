@@ -1,0 +1,70 @@
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import javax.ejb.EJBHome;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.rmi.PortableRemoteObject;
+
+import java.util.Hashtable;
+import java.util.ResourceBundle;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+public class SCBServiceLocatorTest {
+
+    private SCBServiceLocator serviceLocator;
+
+    @BeforeEach
+    void setUp() throws Exception {
+        // Clear singleton before each test
+        java.lang.reflect.Field field = SCBServiceLocator.class.getDeclaredField("serviceLocator");
+        field.setAccessible(true);
+        field.set(null, null);
+    }
+
+    @Test
+    public void testGetInstanceNotNull() throws Exception {
+        SCBServiceLocator instance = SCBServiceLocator.getInstance();
+        assertNotNull(instance);
+    }
+
+    @Test
+    public void testGetObjectReferenceWithClass() throws Exception {
+        SCBServiceLocator instance = SCBServiceLocator.getInstance();
+
+        InitialContext mockContext = mock(InitialContext.class);
+        EJBHome mockEJBHome = mock(EJBHome.class);
+        Object mockObj = mock(Object.class);
+
+        // Set the mock context using reflection
+        java.lang.reflect.Field ctxField = SCBServiceLocator.class.getDeclaredField("context");
+        ctxField.setAccessible(true);
+        ctxField.set(instance, mockContext);
+
+        when(mockContext.lookup("java.lang.String")).thenReturn(mockObj);
+        PortableRemoteObject mockPortableRemote = mock(PortableRemoteObject.class);
+
+        EJBHome result = instance.getObjectReference(String.class);
+        assertNull(result); // will return null as PortableRemoteObject.narrow is not mocked to return anything
+    }
+
+    @Test
+    public void testGetObjectReferenceWithJNDIAndClass() throws Exception {
+        SCBServiceLocator instance = SCBServiceLocator.getInstance();
+
+        InitialContext mockContext = mock(InitialContext.class);
+        Object mockObj = mock(Object.class);
+
+        java.lang.reflect.Field ctxField = SCBServiceLocator.class.getDeclaredField("context");
+        ctxField.setAccessible(true);
+        ctxField.set(instance, mockContext);
+
+        when(mockContext.lookup("TestJNDI")).thenReturn(mockObj);
+
+        EJBHome result = instance.getObjectReference("TestJNDI", String.class);
+        assertNull(result); // same here, unless you mock PortableRemoteObject.narrow return
+    }
+}
