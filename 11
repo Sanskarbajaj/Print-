@@ -5,9 +5,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.util.HashMap;
+import java.util.ResourceBundle;
 
 import static org.mockito.Mockito.*;
 
@@ -20,7 +20,14 @@ public class SCBReportExporterServletTest {
     private RequestDispatcher dispatcher;
 
     @BeforeEach
-    public void setup() {
+    public void setUp() throws Exception {
+        ResourceBundle mockBundle = mock(ResourceBundle.class);
+        when(mockBundle.getString("reportDest")).thenReturn("reportDispatch.jsp");
+
+        java.lang.reflect.Field field = SCBReportExporterServlet.class.getDeclaredField("reportDest");
+        field.setAccessible(true);
+        field.set(null, "reportDispatch.jsp");
+
         servlet = new SCBReportExporterServlet();
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);
@@ -29,23 +36,18 @@ public class SCBReportExporterServletTest {
     }
 
     @Test
-    public void testServiceMethod_withValidParams() throws Exception {
-        // Setup request parameters
-        when(request.getParameter("token")).thenReturn("12345");
-        when(request.getParameter("reportID")).thenReturn("rpt123");
+    public void testService_withValidParams() throws Exception {
+        when(request.getParameter("token")).thenReturn("123");
+        when(request.getParameter("reportID")).thenReturn("456");
         when(request.getParameter("format")).thenReturn("pdf");
         when(request.getParameter("reportName")).thenReturn("On Demand");
         when(request.getParameterMap()).thenReturn(new HashMap<>());
 
-        // Mock servlet context and dispatcher
         when(request.getServletContext()).thenReturn(context);
-        when(context.getRequestDispatcher("/reports/reportDispatch.jsp"))
-                .thenReturn(dispatcher);
+        when(context.getRequestDispatcher("/reports/reportDispatch.jsp")).thenReturn(dispatcher);
 
-        // Run service method
         servlet.service(request, response);
 
-        // Verify forwarding
         verify(dispatcher).forward(request, response);
     }
 }
