@@ -1,0 +1,47 @@
+import com.scb.communication.servlet.SCBApplicationStartup;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.ResourceBundle;
+
+import static org.mockito.Mockito.*;
+
+public class SCBApplicationStartupTest {
+
+    private SCBApplicationStartup servlet;
+    private HttpServletRequest request;
+    private HttpServletResponse response;
+    private ServletConfig config;
+
+    @BeforeEach
+    public void setup() throws Exception {
+        // Set static config values using reflection to bypass ResourceBundle
+        ResourceBundle mockBundle = mock(ResourceBundle.class);
+        when(mockBundle.getObject("tp.configPath")).thenReturn("dummyConfigPath");
+        when(mockBundle.getObject("tp.applicationConfig")).thenReturn("TPAppComponents.properties");
+
+        servlet = new SCBApplicationStartup();
+        request = mock(HttpServletRequest.class);
+        response = mock(HttpServletResponse.class);
+        config = mock(ServletConfig.class);
+    }
+
+    @Test
+    public void testInitShouldNotThrow() throws Exception {
+        servlet.init(config);
+    }
+
+    @Test
+    public void testDoGetAndDoPostShouldNotThrow() throws Exception {
+        servlet.doGet(request, response);
+        servlet.doPost(request, response);
+    }
+
+    @Test
+    public void testGenerateClientCacheFiles() {
+        servlet.generateClientCacheFiles();
+    }
+}
