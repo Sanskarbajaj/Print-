@@ -1,0 +1,51 @@
+import com.clo.servlet.SCBReportExporterServlet;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import java.util.HashMap;
+
+import static org.mockito.Mockito.*;
+
+public class SCBReportExporterServletTest {
+
+    private SCBReportExporterServlet servlet;
+    private HttpServletRequest request;
+    private HttpServletResponse response;
+    private ServletContext context;
+    private RequestDispatcher dispatcher;
+
+    @BeforeEach
+    public void setup() {
+        servlet = new SCBReportExporterServlet();
+        request = mock(HttpServletRequest.class);
+        response = mock(HttpServletResponse.class);
+        context = mock(ServletContext.class);
+        dispatcher = mock(RequestDispatcher.class);
+    }
+
+    @Test
+    public void testServiceMethod_withValidParams() throws Exception {
+        // Setup request parameters
+        when(request.getParameter("token")).thenReturn("12345");
+        when(request.getParameter("reportID")).thenReturn("rpt123");
+        when(request.getParameter("format")).thenReturn("pdf");
+        when(request.getParameter("reportName")).thenReturn("On Demand");
+        when(request.getParameterMap()).thenReturn(new HashMap<>());
+
+        // Mock servlet context and dispatcher
+        when(request.getServletContext()).thenReturn(context);
+        when(context.getRequestDispatcher("/reports/reportDispatch.jsp"))
+                .thenReturn(dispatcher);
+
+        // Run service method
+        servlet.service(request, response);
+
+        // Verify forwarding
+        verify(dispatcher).forward(request, response);
+    }
+}
