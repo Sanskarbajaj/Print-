@@ -45,3 +45,57 @@ public class SCBApplicationStartupTest {
         servlet.generateClientCacheFiles();
     }
 }
+
+
+
+package com.scb;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+import com.scb.SCBWebConstantIF;
+
+public class SCBWebConstantIFTest {
+
+    @Test
+    public void testConstantsValues() {
+        assertEquals("UTF-8", SCBWebConstantIF.ENCODINGFORMAT);
+        assertEquals("text/plain", SCBWebConstantIF.CONTENTTYPE);
+        assertEquals("Content-Encoding", SCBWebConstantIF.CONTENTENCODING);
+        assertEquals("gzip", SCBWebConstantIF.COMPRESSIONTYPE);
+        assertEquals("8000", SCBWebConstantIF.SERVER_RESPONSE_SIZE);
+        assertEquals("text/html", SCBWebConstantIF.NO_COMPRESSION_TYPE);
+        assertEquals("application/pdf", SCBWebConstantIF.PDF_CONTENT_TYPE);
+        assertEquals("Content-Disposition", SCBWebConstantIF.CONTENT_HEADER);
+        assertEquals("attachment;filename=", SCBWebConstantIF.ATTACH_TYPE);
+        assertEquals("OAFJNDI", SCBWebConstantIF.OAF_JNDINAME);
+        assertEquals("APPSERVERNAME", SCBWebConstantIF.OAF_APPSERVERNAME);
+        assertEquals("PROVIDER_URL", SCBWebConstantIF.WEBSPHERE_PROVIDER_URL);
+        assertEquals("CONTEXT_FACTORY", SCBWebConstantIF.WEBSPHERE_CONTEXT_FACTORY);
+        assertEquals(System.getProperty("line.separator"), SCBWebConstantIF.NEWLINE_SEPARATOR);
+        assertEquals("application/x-inlp", SCBWebConstantIF.JNLP_CONTENT_TYPE);
+        assertEquals("types", SCBWebConstantIF.JNLP_CONTENT_TYPES);
+        assertEquals("bankGroup", SCBWebConstantIF.BANKGROUPCODE_PARAM);
+        assertEquals("dealRecID", SCBWebConstantIF.DEALRECID_PARAM);
+        assertEquals("adviceID", SCBWebConstantIF.ADVICEID_PARAM);
+        assertEquals("watermark", SCBWebConstantIF.WATERMARK_PARAM);
+        assertEquals("stepId", SCBWebConstantIF.SRV_STEPID);
+        assertEquals("msgType", SCBWebConstantIF.SRV_MSGTYPE);
+        assertEquals("ctyCode", SCBWebConstantIF.SRV_CTYCODE);
+        assertEquals("type", SCBWebConstantIF.JNLP_WEBSTART_TYPE);
+        assertEquals("1", SCBWebConstantIF.JNLP_FILE_DEFAULT_TYPE);
+        assertEquals("SCBCachedGroupAccessDAO", SCBWebConstantIF.SCBCACHEDGROUPACCESSDAO);
+        assertEquals("RetrieveAllGroupAccess", SCBWebConstantIF.RETRIEVEALLGROUPACCESS);
+        assertEquals("SI_OUTCOME", SCBWebConstantIF.SI_OUTCOME);
+        assertEquals("RASReportService", SCBWebConstantIF.RASREPORTSERVICE);
+        assertEquals("InfoStore", SCBWebConstantIF.INFOSTORE);
+        assertEquals("SELECT * FROM CI_INFOOBJECTS WHERE SI_ID=", SCBWebConstantIF.QUERY_ALL);
+        assertEquals("folderID", SCBWebConstantIF.FOLDERID);
+        assertEquals("&password=", SCBWebConstantIF.PASSWORDPARAM);
+        assertEquals("&user=", SCBWebConstantIF.USERPARAM);
+        assertEquals("email", SCBWebConstantIF.EMAIL);
+        assertEquals("objid", SCBWebConstantIF.OBJID);
+        assertEquals("LOGIN_SESSION_ID_KEY", SCBWebConstantIF.LOGIN_SESSION_ID_KEY);
+        assertEquals("LOGIN_SESSION_ID_VAL", SCBWebConstantIF.LOGIN_SESSION_ID_VAL);
+    }
+}
+
