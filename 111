@@ -1,0 +1,52 @@
+import com.clo.servlet.SCBLDAPAuthenticatorServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
+import static org.mockito.Mockito.*;
+
+public class SCBLDAPAuthenticatorServletTest {
+
+    private SCBLDAPAuthenticatorServlet servlet;
+    private HttpServletRequest request;
+    private HttpServletResponse response;
+    private StringWriter responseWriter;
+
+    @BeforeEach
+    public void setup() throws Exception {
+        java.lang.reflect.Field fieldCms = SCBLDAPAuthenticatorServlet.class.getDeclaredField("cms");
+        fieldCms.setAccessible(true);
+        fieldCms.set(null, "dummyCms");
+
+        java.lang.reflect.Field fieldAuth = SCBLDAPAuthenticatorServlet.class.getDeclaredField("auth");
+        fieldAuth.setAccessible(true);
+        fieldAuth.set(null, "dummyAuth");
+
+        java.lang.reflect.Field fieldPass = SCBLDAPAuthenticatorServlet.class.getDeclaredField("LH_PASSWORD");
+        fieldPass.setAccessible(true);
+        fieldPass.set(null, "dummyPass");
+
+        servlet = new SCBLDAPAuthenticatorServlet();
+        request = mock(HttpServletRequest.class);
+        response = mock(HttpServletResponse.class);
+        responseWriter = new StringWriter();
+
+        when(response.getWriter()).thenReturn(new PrintWriter(responseWriter));
+    }
+
+    @Test
+    public void testService_validInput_skipsLDAP_andRendersHTML() throws Exception {
+        when(request.getParameter("userID")).thenReturn("testUser");
+        when(request.getParameter("password")).thenReturn("testPass");
+
+        servlet.service(request, response);
+
+        String output = responseWriter.toString();
+        System.out.println("Output: " + output);
+        assert(output.contains("<table>"));
+    }
+}
