@@ -1,0 +1,78 @@
+package com.scb.communication.servlet;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import java.io.*;
+import java.util.ResourceBundle;
+
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SCBMagellanAppTest {
+
+    private SCBMagellanApp servlet;
+    private HttpServletRequest request;
+    private HttpServletResponse response;
+    private ServletOutputStream outputStream;
+
+    @BeforeEach
+    public void setup() throws Exception {
+        servlet = new SCBMagellanApp();
+        request = mock(HttpServletRequest.class);
+        response = mock(HttpServletResponse.class);
+        outputStream = mock(ServletOutputStream.class);
+    }
+
+    @Test
+    public void testDoGet_whenFileExists() throws Exception {
+        // Prepare dummy file
+        File dummyFile = File.createTempFile("test", ".jnlp");
+        dummyFile.deleteOnExit();
+        try (FileOutputStream fos = new FileOutputStream(dummyFile)) {
+            fos.write("test-data".getBytes());
+        }
+
+        // Mock bundle and file system
+        ResourceBundle mockBundle = mock(ResourceBundle.class);
+        when(request.getParameter("type")).thenReturn("jnlp1");
+        when(mockBundle.getObject("JNLP_WEBSTART_TYPE")).thenReturn("jnlp1");
+        when(mockBundle.getObject("JNLP_CONTENT_TYPES")).thenReturn("jnlp1");
+        when(mockBundle.getObject("jnlp1")).thenReturn(dummyFile.getAbsolutePath());
+
+        try (MockedStatic<ResourceBundle> bundleStatic = mockStatic(ResourceBundle.class)) {
+            bundleStatic.when(() -> ResourceBundle.getBundle(anyString())).thenReturn(mockBundle);
+
+            when(response.getOutputStream()).thenReturn(outputStream);
+
+            servlet.doGet(request, response);
+
+            verify(response).setContentType("application/x-inlp");
+            verify(response).setContentLength((int) dummyFile.length());
+            verify(response).setHeader(eq("Content-Disposition"), contains("attachment;filename="));
+            verify(outputStream).write(any(byte[].class));
+        }
+    }
+
+    @Test
+    public void testDoGet_whenFileDoesNotExist() throws Exception {
+        ResourceBundle mockBundle = mock(ResourceBundle.class);
+        when(request.getParameter("type")).thenReturn("jnlp1");
+        when(mockBundle.getObject("JNLP_WEBSTART_TYPE")).thenReturn("jnlp1");
+        when(mockBundle.getObject("JNLP_CONTENT_TYPES")).thenReturn("jnlp1");
+        when(mockBundle.getObject("jnlp1")).thenReturn("nonexistent/file/path");
+
+        try (MockedStatic<ResourceBundle> bundleStatic = mockStatic(ResourceBundle.class)) {
+            bundleStatic.when(() -> ResourceBundle.getBundle(anyString())).thenReturn(mockBundle);
+
+            servlet.doGet(request, response);
+        }
+
+        // No exception = success for file not found branch
+    }
+}
