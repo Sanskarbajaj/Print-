@@ -1,14 +1,14 @@
 package com.scb.oaf.web.util;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
-import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.rmi.PortableRemoteObject;
+import javax.ejb.EJBHome;
 
 import java.util.Hashtable;
 import java.util.ResourceBundle;
@@ -20,81 +20,83 @@ public class SCBServiceLocatorTest {
 
     @BeforeEach
     void resetSingleton() throws Exception {
-        // Clear singleton instance for isolation
         var field = SCBServiceLocator.class.getDeclaredField("serviceLocator");
         field.setAccessible(true);
         field.set(null, null);
     }
 
     @Test
-    public void testGetInstance_shouldReturnSingleton() throws Exception {
-        ResourceBundle bundle = mock(ResourceBundle.class);
-        when(bundle.getObject("TP_APPSERVER_INSTANCE_ADDRESS")).thenReturn("host");
-        when(bundle.getObject("TP_PROVIDER_URL")).thenReturn("providerUrl");
-        when(bundle.getObject("TP_CONTEXT_FACTORY")).thenReturn("contextFactory");
-
+    void testGetInstance_returnsInstance() throws Exception {
+        ResourceBundle mockBundle = mock(ResourceBundle.class);
         InitialContext mockContext = mock(InitialContext.class);
 
-        try (
-            MockedStatic<ResourceBundle> staticBundle = mockStatic(ResourceBundle.class);
-            MockedStatic<InitialContext> staticContext = mockStatic(InitialContext.class)
-        ) {
-            staticBundle.when(() -> ResourceBundle.getBundle(anyString())).thenReturn(bundle);
-            staticContext.when(() -> new InitialContext(any(Hashtable.class))).thenReturn(mockContext);
+        when(mockBundle.getObject("TP_APPSERVER_INSTANCE_ADDRESS")).thenReturn("localhost");
+        when(mockBundle.getObject("TP_PROVIDER_URL")).thenReturn("t3://localhost:7001");
+        when(mockBundle.getObject("TP_CONTEXT_FACTORY")).thenReturn("com.sun.jndi.fscontext.RefFSContextFactory");
 
-            SCBServiceLocator instance = SCBServiceLocator.getInstance();
-            assertNotNull(instance);
+        try (
+            MockedStatic<ResourceBundle> bundleStatic = Mockito.mockStatic(ResourceBundle.class);
+            MockedStatic<InitialContext> contextStatic = Mockito.mockStatic(InitialContext.class)
+        ) {
+            bundleStatic.when(() -> ResourceBundle.getBundle("SRV_WEB")).thenReturn(mockBundle);
+            contextStatic.when(() -> new InitialContext(any(Hashtable.class))).thenReturn(mockContext);
+
+            SCBServiceLocator locator = SCBServiceLocator.getInstance();
+            assertNotNull(locator);
         }
     }
 
     @Test
-    public void testGetObjectReference_withClass() throws Exception {
-        InitialContext context = mock(InitialContext.class);
-        Object ejb = new Object();
-        when(context.lookup("Dummy")).thenReturn(ejb);
+    void testGetObjectReferenceByClass_returnsEJBHome() throws Exception {
+        InitialContext mockContext = mock(InitialContext.class);
+        Object ejbObject = new Object();
+        EJBHome mockEJBHome = mock(EJBHome.class);
+
+        when(mockContext.lookup("DummyClass")).thenReturn(ejbObject);
 
         try (
-            MockedStatic<InitialContext> staticContext = mockStatic(InitialContext.class);
-            MockedStatic<ResourceBundle> staticBundle = mockStatic(ResourceBundle.class);
-            MockedStatic<PortableRemoteObject> remoteMock = mockStatic(PortableRemoteObject.class)
+            MockedStatic<ResourceBundle> bundleStatic = Mockito.mockStatic(ResourceBundle.class);
+            MockedStatic<InitialContext> contextStatic = Mockito.mockStatic(InitialContext.class);
+            MockedStatic<PortableRemoteObject> remoteObject = Mockito.mockStatic(PortableRemoteObject.class)
         ) {
-            ResourceBundle dummyBundle = mock(ResourceBundle.class);
-            when(dummyBundle.getObject(anyString())).thenReturn("abc");
-            staticBundle.when(() -> ResourceBundle.getBundle(anyString())).thenReturn(dummyBundle);
+            ResourceBundle mockBundle = mock(ResourceBundle.class);
+            when(mockBundle.getObject(anyString())).thenReturn("dummy");
+            bundleStatic.when(() -> ResourceBundle.getBundle(anyString())).thenReturn(mockBundle);
 
-            staticContext.when(() -> new InitialContext(any())).thenReturn(context);
-            remoteMock.when(() -> PortableRemoteObject.narrow(any(), eq(EJBHome.class))).thenReturn(mock(EJBHome.class));
+            contextStatic.when(() -> new InitialContext(any(Hashtable.class))).thenReturn(mockContext);
+            remoteObject.when(() -> PortableRemoteObject.narrow(ejbObject, DummyHome.class)).thenReturn(mockEJBHome);
 
             SCBServiceLocator locator = SCBServiceLocator.getInstance();
-            EJBHome ref = locator.getObjectReference(DummyEJB.class);
-            assertNotNull(ref);
+            EJBHome result = locator.getObjectReference(DummyHome.class);
+            assertNotNull(result);
         }
     }
 
     @Test
-    public void testGetObjectReference_withJNDIName() throws Exception {
-        InitialContext context = mock(InitialContext.class);
-        Object ejb = new Object();
-        when(context.lookup("myJNDI")).thenReturn(ejb);
+    void testGetObjectReferenceByName_returnsEJBHome() throws Exception {
+        InitialContext mockContext = mock(InitialContext.class);
+        Object ejbObject = new Object();
+        EJBHome mockEJBHome = mock(EJBHome.class);
+
+        when(mockContext.lookup("jndi/SomeBean")).thenReturn(ejbObject);
 
         try (
-            MockedStatic<InitialContext> staticContext = mockStatic(InitialContext.class);
-            MockedStatic<ResourceBundle> staticBundle = mockStatic(ResourceBundle.class);
-            MockedStatic<PortableRemoteObject> remoteMock = mockStatic(PortableRemoteObject.class)
+            MockedStatic<ResourceBundle> bundleStatic = Mockito.mockStatic(ResourceBundle.class);
+            MockedStatic<InitialContext> contextStatic = Mockito.mockStatic(InitialContext.class);
+            MockedStatic<PortableRemoteObject> remoteObject = Mockito.mockStatic(PortableRemoteObject.class)
         ) {
-            ResourceBundle dummyBundle = mock(ResourceBundle.class);
-            when(dummyBundle.getObject(anyString())).thenReturn("abc");
-            staticBundle.when(() -> ResourceBundle.getBundle(anyString())).thenReturn(dummyBundle);
+            ResourceBundle mockBundle = mock(ResourceBundle.class);
+            when(mockBundle.getObject(anyString())).thenReturn("dummy");
+            bundleStatic.when(() -> ResourceBundle.getBundle(anyString())).thenReturn(mockBundle);
 
-            staticContext.when(() -> new InitialContext(any())).thenReturn(context);
-            remoteMock.when(() -> PortableRemoteObject.narrow(any(), eq(EJBHome.class))).thenReturn(mock(EJBHome.class));
+            contextStatic.when(() -> new InitialContext(any(Hashtable.class))).thenReturn(mockContext);
+            remoteObject.when(() -> PortableRemoteObject.narrow(ejbObject, DummyHome.class)).thenReturn(mockEJBHome);
 
             SCBServiceLocator locator = SCBServiceLocator.getInstance();
-            EJBHome ref = locator.getObjectReference("myJNDI", DummyEJB.class);
-            assertNotNull(ref);
+            EJBHome result = locator.getObjectReference("jndi/SomeBean", DummyHome.class);
+            assertNotNull(result);
         }
     }
 
-    // Dummy EJB class for mocking
-    interface DummyEJB extends EJBHome {}
+    interface DummyHome extends EJBHome {}
 }
