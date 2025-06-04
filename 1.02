@@ -1,0 +1,51 @@
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import java.util.*;
+
+import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class SCBCLoLimitHelperImplTest {
+
+    @Test
+    void testAuthenticateUser_Valid() {
+        try (MockedStatic<SCBLDAPMasterLookupSearchHelper> mockStatic = mockStatic(SCBLDAPMasterLookupSearchHelper.class)) {
+            mockStatic.when(() -> SCBLDAPMasterLookupSearchHelper.authenticateUser("user1", "pass1"))
+                      .thenReturn(true);
+
+            SCBCLoLimitHelperImpl impl = new SCBCLoLimitHelperImpl();
+            boolean result = impl.authenticateUser("user1", "pass1");
+            assertTrue(result);
+        }
+    }
+
+    @Test
+    void testGetUserCountry() {
+        try (MockedStatic<SCBLDAPMasterLookupSearchHelper> mockStatic = mockStatic(SCBLDAPMasterLookupSearchHelper.class)) {
+            mockStatic.when(() -> SCBLDAPMasterLookupSearchHelper.getUserLocation("user1"))
+                      .thenReturn("India");
+
+            SCBCLoLimitHelperImpl impl = new SCBCLoLimitHelperImpl();
+            String result = impl.getUserCountry("user1");
+            assertEquals("India", result);
+        }
+    }
+
+    @Test
+    void testIsGroupAccess() {
+        // Mock your required context and bean
+        ClassPathXmlApplicationContext context = mock(ClassPathXmlApplicationContext.class);
+        SCBCachedGroupAccessDAOImpl dao = mock(SCBCachedGroupAccessDAOImpl.class);
+        SCBGroupAccessEO groupMock = mock(SCBGroupAccessEO.class);
+        
+        when(context.getBean(anyString())).thenReturn(dao);
+        when(groupMock.getDeptOwner()).thenReturn("user1");
+        when(dao.getHibernateTemplate()).thenReturn(new FakeHibernateTemplate(List.of(groupMock)));
+
+        SCBCLoLimitHelperImpl impl = new SCBCLoLimitHelperImpl();
+        boolean result = impl.isGroupAccess("user1", "pass1", context);
+        assertTrue(result);
+    }
+}
