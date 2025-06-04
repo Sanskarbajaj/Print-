@@ -49,3 +49,26 @@ public class SCBCLoLimitHelperImplTest {
         assertTrue(result);
     }
 }
+
+
+
+import java.util.List;
+import org.springframework.orm.hibernate5.HibernateTemplate;
+
+public class FakeHibernateTemplate extends HibernateTemplate {
+    private final List<?> data;
+
+    public FakeHibernateTemplate(List<?> data) {
+        this.data = data;
+    }
+
+    @Override
+    public List<?> findByNamedQuery(String queryName) {
+        return data;
+    }
+
+    @Override
+    public List<?> findByNamedQuery(String queryName, Object... values) {
+        return data;
+    }
+}
