@@ -1,0 +1,53 @@
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.io.ByteArrayInputStream;
+import java.io.FileOutputStream;
+
+import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+
+public class SCBOEmailUtilTest {
+
+    @Test
+    public void testSendReport_whenExportWorks_shouldReturnTrue() throws Exception {
+        // Mock all external dependencies and static methods
+        try (MockedStatic<SCBPropertiesloader> mockProps = Mockito.mockStatic(SCBPropertiesloader.class)) {
+
+            SCBPropertiesloader mockLoader = mock(SCBPropertiesloader.class);
+            when(mockLoader.getMailMsgError()).thenReturn("Test error");
+            when(mockLoader.getMailMsgSubject()).thenReturn("TestSubject");
+            when(mockLoader.getMailMsgSender()).thenReturn("test@domain.com");
+            when(mockLoader.getSmtpHost()).thenReturn("smtp.domain.com");
+            when(mockLoader.getSmtpPort()).thenReturn("25");
+
+            mockProps.when(SCBPropertiesloader::getInstance).thenReturn(mockLoader);
+
+            // Call the method (you may want to mock more if needed)
+            boolean result = SCBOEmailUtil.sendReport(
+                null, "rep123", "user", "pwd", "email@domain.com"
+            );
+
+            // You’ll need to further mock internals of sendReport depending on actual usage
+            assertTrue(result); // Assuming it completes successfully
+        }
+    }
+
+    @Test
+    public void testEmailReport_withAttachment() throws Exception {
+        try (MockedStatic<SCBPropertiesloader> mockProps = Mockito.mockStatic(SCBPropertiesloader.class)) {
+            SCBPropertiesloader loader = mock(SCBPropertiesloader.class);
+            mockProps.when(SCBPropertiesloader::getInstance).thenReturn(loader);
+            when(loader.getSmtpHost()).thenReturn("smtp");
+            when(loader.getSmtpPort()).thenReturn("25");
+            when(loader.getMailMsgSender()).thenReturn("sender@test.com");
+            when(loader.getMailMsgSubject()).thenReturn("subject");
+
+            ByteArrayInputStream bis = new ByteArrayInputStream("data".getBytes());
+
+            // You may want to mock SCBEMailMessage or check logs
+            SCBOEmailUtil.emailReport("report", "receiver@test.com", bis, "errorMsg", "filename.xls");
+        }
+    }
+}
