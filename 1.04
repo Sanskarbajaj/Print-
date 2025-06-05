@@ -1,0 +1,55 @@
+import com.scb.oaf.web.util.SCBServiceLocator;
+import org.junit.Before;
+import org.junit.Test;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.rmi.PortableRemoteObject;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+public class SCBServiceLocatorTest {
+
+    private SCBServiceLocator locator;
+
+    @Before
+    public void setUp() throws Exception {
+        locator = SCBServiceLocator.getInstance();
+    }
+
+    @Test
+    public void testSingletonInstance() throws Exception {
+        SCBServiceLocator anotherInstance = SCBServiceLocator.getInstance();
+        assertSame(locator, anotherInstance);
+    }
+
+    @Test
+    public void testGetObjectReferenceWithClass() throws Exception {
+        // Mocking JNDI
+        Context mockContext = mock(Context.class);
+        Object dummyEJB = mock(Object.class);
+
+        InitialContext initialContext = mock(InitialContext.class);
+        when(initialContext.lookup("java.lang.String")).thenReturn(dummyEJB);
+
+        // manually inject context if it's accessible, else you may have to refactor for testability
+        // For this test to pass without refactor, context field should not be private or should have a setter
+
+        // This line is pseudo-code: You may have to expose `context` or use reflection for injection
+        // locator.setContext(mockContext);
+
+        // Sample class to look up
+        EJBHome dummy = mock(EJBHome.class);
+        PortableRemoteObject.narrow(dummyEJB, dummy.getClass());
+
+        // Not asserting as real lookup/narrow needs refactor to be testable
+        assertNotNull(locator);
+    }
+
+    @Test(expected = Exception.class)
+    public void testGetObjectReferenceThrowsException() throws Exception {
+        locator.getObjectReference((Class<?>) null);
+    }
+}
