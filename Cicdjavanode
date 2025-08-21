@@ -1,0 +1,87 @@
+name: Reusable CI Workflow
+
+on:
+  workflow_call:
+    inputs:
+      language:
+        description: "Project type"
+        required: true
+        type: choice
+        options:
+          - java
+          - node
+
+      java-version:
+        description: "Java version"
+        required: false
+        type: choice
+        default: "17"
+        options:
+          - "8"
+          - "11"
+          - "17"
+          - "21"
+
+      node-version:
+        description: "Node.js version"
+        required: false
+        type: choice
+        default: "18"
+        options:
+          - "14"
+          - "16"
+          - "18"
+          - "20"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Java Steps
+      - name: Setup Java
+        if: ${{ inputs.language == 'java' }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ inputs.java-version }}
+
+      - name: Build with Maven
+        if: ${{ inputs.language == 'java' }}
+        run: mvn clean verify
+
+      # Node Steps
+      - name: Setup Node.js
+        if: ${{ inputs.language == 'node' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+
+      - name: Install dependencies & run tests
+        if: ${{ inputs.language == 'node' }}
+        run: |
+          npm install
+          npm test
+
+
+
+
+name: Project CI
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  ci:
+    uses: your-org/ci-repo/.github/workflows/ci.yml@main
+    with:
+      language: java       # or node
+      java-version: "17"   # only needed if java
+      node-version: "18"   # only needed if node
+
+
+
