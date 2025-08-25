@@ -1,0 +1,23 @@
+import { test, expect } from '@playwright/test';
+import { createBdd } from 'playwright-bdd';
+
+const { Given, Then } = createBdd(test);
+
+Given('I open {string}', async ({ page }, url: string) => {
+  await page.goto(url);
+});
+
+Then('I see {string} in the title', async ({ page }, expected: string) => {
+  await expect(page).toHaveTitle(new RegExp(expected));
+});
+
+
+npx bddgen
+
+
+npx playwright test --ui
+
+
+npx playwright show-report
+
+
