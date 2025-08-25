@@ -1,0 +1,66 @@
+Feature: Google search test
+
+  Scenario: Open Google homepage
+    Given I open the browser
+    When I go to "https://www.google.com"
+    Then I should see "Google" in the title
+
+
+import { Given, When, Then } from "@cucumber/cucumber";
+import { chromium, Browser, Page } from "playwright";
+import assert from "assert";
+
+let browser: Browser;
+let page: Page;
+
+Given("I open the browser", async function () {
+  browser = await chromium.launch({ headless: true });
+  const context = await browser.newContext();
+  page = await context.newPage();
+});
+
+When("I go to {string}", async function (url: string) {
+  await page.goto(url);
+});
+
+Then("I should see {string} in the title", async function (expected: string) {
+  const title = await page.title();
+  assert(title.includes(expected), `Expected "${title}" to include "${expected}"`);
+  await browser.close();
+});
+
+
+
+module.exports = {
+  default: {
+    require: ["./steps/*.ts"],
+    format: ["progress"],
+    publishQuiet: true,
+    requireModule: ["ts-node/register"]
+  }
+};
+
+
+
+"scripts": {
+  "test:bdd": "cucumber-js"
+}
+
+
+npm run test:bdd
+
+
+
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "skipLibCheck": true
+  }
+}
+
+
+
