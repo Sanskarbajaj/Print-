@@ -1,0 +1,38 @@
+[
+  {
+    "uri": "features/sample.feature",
+    "elements": [
+      {
+        "name": "Verify login works",
+        "type": "scenario",
+        "keyword": "Scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "user is on login page",
+            "result": {
+              "status": "passed",
+              "duration": 1000
+            }
+          },
+          {
+            "keyword": "When ",
+            "name": "user enters valid credentials",
+            "result": {
+              "status": "passed",
+              "duration": 2000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "user should be logged in",
+            "result": {
+              "status": "passed",
+              "duration": 1500
+            }
+          }
+        ]
+      }
+    ]
+  }
+]
