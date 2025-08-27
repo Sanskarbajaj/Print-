@@ -1,0 +1,63 @@
+{
+  "info": {
+    "summary": "BDD Test Execution Results",
+    "description": "Automated test execution results for BCM Manager Support Access scenarios",
+    "version": "1.0",
+    "user": "automation",
+    "revision": "1.0",
+    "startDate": "2024-08-28T10:00:00Z",
+    "finishDate": "2024-08-28T10:05:00Z",
+    "testPlanKey": "BCM-TESTPLAN",
+    "testEnvironments": ["Chrome"]
+  },
+  "tests": [
+    {
+      "testKey": "BCM-TEST-001",
+      "start": "2024-08-28T10:00:00Z",
+      "finish": "2024-08-28T10:01:52Z",
+      "comment": "BCM Manager has the right scope scenario",
+      "status": "PASS",
+      "steps": [
+        {
+          "status": "PASS",
+          "comment": "Given step executed successfully",
+          "actualResult": "BCM Manager has the right scope verified"
+        }
+      ],
+      "examples": [],
+      "defects": []
+    },
+    {
+      "testKey": "BCM-TEST-002", 
+      "start": "2024-08-28T10:01:52Z",
+      "finish": "2024-08-28T10:02:31Z",
+      "comment": "When the 'Contact Support' in the header is used scenario",
+      "status": "PASS",
+      "steps": [
+        {
+          "status": "PASS",
+          "comment": "When step executed successfully",
+          "actualResult": "Contact Support header functionality verified"
+        }
+      ],
+      "examples": [],
+      "defects": []
+    },
+    {
+      "testKey": "BCM-TEST-003",
+      "start": "2024-08-28T10:02:31Z", 
+      "finish": "2024-08-28T10:02:53Z",
+      "comment": "Then 'User Support' should be accessible scenario",
+      "status": "PASS",
+      "steps": [
+        {
+          "status": "PASS",
+          "comment": "Then step executed successfully", 
+          "actualResult": "User Support accessibility confirmed"
+        }
+      ],
+      "examples": [],
+      "defects": []
+    }
+  ]
+}
