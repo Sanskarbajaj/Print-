@@ -1,0 +1,57 @@
+// upload-xray.js
+import fs from "fs";
+import fetch from "node-fetch";
+import FormData from "form-data";
+
+// 🔹 Set your Jira base URL & PAT (same as in your working script)
+const JIRA_URL = "https://jira.world.socgen";   // adjust if different
+const JIRA_TOKEN = process.env.JIRA_TOKEN;      // export JIRA_TOKEN=xxxx
+// If your Jira needs Basic auth instead of Bearer, use:
+// "Authorization": "Basic " + Buffer.from("username:token").toString("base64")
+
+// 🔹 Path to your Playwright Cucumber JSON result
+const CUCUMBER_JSON = "./reports/cucumber.json";
+
+async function uploadResults() {
+  try {
+    // check file exists
+    if (!fs.existsSync(CUCUMBER_JSON)) {
+      console.error("❌ cucumber.json not found:", CUCUMBER_JSON);
+      process.exit(1);
+    }
+
+    const form = new FormData();
+    form.append("file", fs.createReadStream(CUCUMBER_JSON));
+
+    const response = await fetch(
+      `${JIRA_URL}/rest/raven/1.0/import/execution/cucumber`,
+      {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${JIRA_TOKEN}`,
+          ...form.getHeaders()
+        },
+        body: form
+      }
+    );
+
+    if (!response.ok) {
+      console.error("❌ Upload failed:", response.status, await response.text());
+      return;
+    }
+
+    const data = await response.json();
+    console.log("✅ Xray import success:", JSON.stringify(data, null, 2));
+  } catch (err) {
+    console.error("❌ Error:", err.message);
+  }
+}
+
+uploadResults();
+
+
+
+npm install node-fetch form-data
+export JIRA_TOKEN=yourPAT
+
+node upload-xray.js
