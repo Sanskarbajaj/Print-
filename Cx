@@ -1,0 +1,58 @@
+[
+  {
+    "uri": "features/login.feature",
+    "id": "login-feature",
+    "keyword": "Feature",
+    "name": "Login Feature",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "login-feature;successful-login",
+        "keyword": "Scenario",
+        "name": "Successful login with valid credentials",
+        "description": "",
+        "line": 5,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "user is on login page",
+            "line": 6,
+            "match": {
+              "location": "LoginSteps.user_is_on_login_page()"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1000000
+            }
+          },
+          {
+            "keyword": "When ",
+            "name": "user enters valid credentials",
+            "line": 7,
+            "match": {
+              "location": "LoginSteps.user_enters_valid_credentials()"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2000000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "user should be redirected to dashboard",
+            "line": 8,
+            "match": {
+              "location": "LoginSteps.user_should_be_redirected_to_dashboard()"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]
