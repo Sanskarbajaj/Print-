@@ -1,0 +1,15 @@
+[
+  {
+    "name": "Login Feature",
+    "elements": [
+      {
+        "name": "Successful login",
+        "steps": [
+          { "name": "Open login page", "result": { "status": "passed" } },
+          { "name": "Enter credentials", "result": { "status": "passed" } },
+          { "name": "Click login", "result": { "status": "passed" } }
+        ]
+      }
+    ]
+  }
+]
