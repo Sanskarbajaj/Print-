@@ -1,0 +1,33 @@
+// upload-junit-to-xray.js
+import fs from "fs";
+import axios from "axios";
+import FormData from "form-data";
+
+async function uploadJUnit() {
+  try {
+    const filePath = "./test-results/junit.xml"; // adjust path
+
+    if (!fs.existsSync(filePath)) {
+      console.log("⚠️ junit.xml not found");
+      return;
+    }
+
+    const form = new FormData();
+    form.append("file", fs.createReadStream(filePath));
+
+    const url = "https://jira.world.socgen/rest/raven/1.0/import/execution/junit?projectKey=BCM";
+
+    const response = await axios.post(url, form, {
+      headers: {
+        ...form.getHeaders(),
+        Authorization: `Bearer ${process.env.JIRA_PAT}`, // <-- Use your PAT here
+      },
+    });
+
+    console.log("✅ Uploaded successfully:", response.data);
+  } catch (error) {
+    console.error("❌ Upload failed:", error.response?.data || error.message);
+  }
+}
+
+uploadJUnit();
