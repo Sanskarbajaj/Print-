@@ -1,0 +1,69 @@
+[
+  {
+    "name": "Login Feature",
+    "elements": [
+      {
+        "name": "Successful login",
+        "steps": [
+          { "name": "Open login page", "result": { "status": "passed" } },
+          { "name": "Enter valid credentials", "result": { "status": "passed" } },
+          { "name": "Click login button", "result": { "status": "passed" } }
+        ]
+      },
+      {
+        "name": "Failed login with invalid password",
+        "steps": [
+          { "name": "Open login page", "result": { "status": "passed" } },
+          { "name": "Enter invalid credentials", "result": { "status": "passed" } },
+          { "name": "Click login button", "result": { "status": "failed", "error_message": "Invalid credentials error displayed" } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Search Feature",
+    "elements": [
+      {
+        "name": "Search for existing product",
+        "steps": [
+          { "name": "Open home page", "result": { "status": "passed" } },
+          { "name": "Enter product name", "result": { "status": "passed" } },
+          { "name": "Verify product is displayed", "result": { "status": "passed" } }
+        ]
+      },
+      {
+        "name": "Search for non-existent product",
+        "steps": [
+          { "name": "Open home page", "result": { "status": "passed" } },
+          { "name": "Enter random product name", "result": { "status": "passed" } },
+          { "name": "Verify no results found message", "result": { "status": "passed" } }
+        ]
+      }
+    ]
+  }
+]
+
+
+
+
+{
+  "fields": {
+    "project": {
+      "key": "BCM"
+    },
+    "summary": "Automated Test Execution - Playwright BDD",
+    "issuetype": {
+      "name": "Test Execution"
+    },
+    "description": "Test execution generated from Playwright-BDD automated tests"
+  },
+  "xrayFields": {
+    "testPlanKey": "BCM-456",
+    "environments": ["QA", "Staging"],
+    "startDate": "2025-08-28T10:00:00+0530",
+    "finishDate": "2025-08-28T11:00:00+0530"
+  }
+}
+
+
+
