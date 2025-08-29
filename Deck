@@ -1,0 +1,40 @@
+Create a professional PowerPoint presentation explaining the Playwright + Jira integration workflow for automated test execution and reporting. 
+Make it clean, modern, and use official logos (Cucumber, Playwright, JUnit, Jira/Xray). Include arrows and flow diagrams.
+
+Slides breakdown:
+1. Title Slide:
+   - Title: "Playwright + Jira Integration Workflow"
+   - Subtitle: "Automated Testing with Cucumber, Playwright, JUnit & Xray API"
+   - Background with testing/dev theme
+
+2. Workflow Overview:
+   - List the steps:
+     1. Create Feature File (Cucumber)
+     2. Define Step Definitions
+     3. Generate Tests with `npx bddgen`
+     4. Run Tests with `npx playwright test`
+     5. Generate JUnit Report
+     6. Upload Results to Jira using Xray JUnit Import API (with PAT)
+     7. Track Execution (Pass/Fail) in Jira
+
+3. Detailed Flow Diagram:
+   - Show boxes with logos:
+     - Cucumber (Feature File)
+     - Playwright (Step Definitions + Test Execution)
+     - JUnit (Report)
+     - Jira/Xray (Upload & Execution Tracking)
+   - Connect them with arrows showing flow left to right
+
+4. Step Details:
+   - Each step with logo and short explanation (Feature files, bddgen, execution, reporting, upload, tracking)
+
+5. Example Jira Execution:
+   - Mock screenshot or placeholder showing Jira Test Execution issue with Pass/Fail status
+
+6. Benefits Slide:
+   - Use icons + bullets:
+     ✔ End-to-end automated workflow
+     ✔ Clear mapping from BDD scenarios to Jira test cases
+     ✔ Automated reporting with JUnit
+     ✔ Seamless integration with Jira Xray
+     ✔ Easy tracking of pass/fail test executions
