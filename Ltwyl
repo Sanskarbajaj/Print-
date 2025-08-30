@@ -1,0 +1,105 @@
+const fs = require("fs");
+const xml2js = require("xml2js");
+const axios = require("axios");
+
+// ===== CONFIG =====
+const JIRA_BASE_URL = "https://jira.world.socgen";
+const JIRA_PAT = "your_personal_access_token"; // PAT
+const JIRA_PROJECT_KEY = "BCM";
+const JUNIT_FILE = "results.xml"; // Path to your JUnit file
+
+// ===== AUTH HEADER =====
+const authHeader = {
+  headers: {
+    Authorization: `Bearer ${JIRA_PAT}`,
+  },
+};
+
+// ===== IMPORT TO XRAY & GET EXEC KEY =====
+async function importJUnitAndGetExecKey() {
+  const formData = new FormData();
+  formData.append("file", fs.createReadStream(JUNIT_FILE));
+
+  const res = await axios.post(
+    `${JIRA_BASE_URL}/rest/raven/1.0/import/execution/junit`,
+    formData,
+    { headers: { ...formData.getHeaders(), Authorization: `Bearer ${JIRA_PAT}` } }
+  );
+
+  const execKey = res.data.testExecIssue.key;
+  console.log(`📂 Created/Updated Test Execution: ${execKey}`);
+  return execKey;
+}
+
+// ===== CREATE BUG =====
+async function createBug(summary, details) {
+  const bugPayload = {
+    fields: {
+      project: { key: JIRA_PROJECT_KEY },
+      issuetype: { name: "Bug" },
+      summary: `Bug: ${summary}`,
+      description: details,
+      priority: { name: "Medium" },
+    },
+  };
+
+  const res = await axios.post(
+    `${JIRA_BASE_URL}/rest/api/2/issue`,
+    bugPayload,
+    authHeader
+  );
+
+  console.log(`✅ Bug created: ${res.data.key}`);
+  return res.data.key;
+}
+
+// ===== LINK BUG TO EXECUTION =====
+async function linkBugToExecution(bugKey, execKey) {
+  const linkPayload = {
+    type: { name: "Relates" },
+    inwardIssue: { key: bugKey },
+    outwardIssue: { key: execKey },
+  };
+
+  await axios.post(
+    `${JIRA_BASE_URL}/rest/api/2/issueLink`,
+    linkPayload,
+    authHeader
+  );
+
+  console.log(`🔗 Linked ${bugKey} to ${execKey}`);
+}
+
+// ===== PARSE JUNIT RESULTS & CREATE BUGS =====
+async function parseJUnitAndCreateBugs(execKey) {
+  const xml = fs.readFileSync(JUNIT_FILE, "utf8");
+  xml2js.parseString(xml, async (err, result) => {
+    if (err) throw err;
+
+    const testcases = result.testsuite.testcase || [];
+    for (let tc of testcases) {
+      if (tc.failure) {
+        const name = tc.$.name;
+        const classname = tc.$.classname || "";
+        const error = tc.failure[0]._;
+        const summary = `${classname} - ${name}`;
+        const details = `Test failed in execution ${execKey}\n\nError:\n${error}`;
+
+        const bugKey = await createBug(summary, details);
+        if (bugKey) {
+          await linkBugToExecution(bugKey, execKey);
+        }
+      }
+    }
+  });
+}
+
+// ===== MAIN FLOW =====
+(async () => {
+  try {
+    const execKey = await importJUnitAndGetExecKey(); // Step 1: Import results
+    await parseJUnitAndCreateBugs(execKey);           // Step 2: Create bugs for fails
+  } catch (err) {
+    console.error("❌ Flow failed:", err.response?.data || err.message);
+  }
+})();
