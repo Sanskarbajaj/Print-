@@ -1,0 +1,131 @@
+import fs from "fs";
+import axios from "axios";
+import FormData from "form-data";
+import xml2js from "xml2js";
+
+// ===== CONFIG =====
+const JIRA_BASE_URL = "https://jira.world.socgen";
+const JIRA_PAT = "YOUR_PAT";                // <-- use your PAT
+const JIRA_PROJECT_KEY = "BCM";             // Project where Bugs should be created
+const FILE_PATH = "./test-results-junit.xml"; // adjust path to your JUnit XML file
+
+// ===== AUTH HEADER =====
+const authHeader = {
+  headers: {
+    Authorization: `Bearer ${JIRA_PAT}`,
+    "Content-Type": "application/json",
+  },
+};
+
+// ===== STEP 1: UPLOAD JUNIT & GET EXECUTION KEY =====
+async function uploadJUnit() {
+  if (!fs.existsSync(FILE_PATH)) {
+    console.error("❌ JUnit file not found:", FILE_PATH);
+    return;
+  }
+
+  const form = new FormData();
+  form.append("file", fs.createReadStream(FILE_PATH));
+
+  const url = `${JIRA_BASE_URL}/rest/raven/1.0/import/execution/junit?projectKey=${JIRA_PROJECT_KEY}`;
+
+  try {
+    const response = await axios.post(url, form, {
+      headers: { ...form.getHeaders(), Authorization: `Bearer ${JIRA_PAT}` },
+    });
+
+    const execKey = response.data.testExecIssue.key;
+    console.log(`📂 Uploaded successfully. Execution created: ${execKey}`);
+
+    await parseJUnitAndCreateBugs(execKey);
+  } catch (error) {
+    console.error("❌ Upload failed:", error.response?.data || error.message);
+  }
+}
+
+// ===== STEP 2: CREATE BUG =====
+async function createBug(summary, details) {
+  const bugPayload = {
+    fields: {
+      project: { key: JIRA_PROJECT_KEY },
+      issuetype: { name: "Bug" },
+      summary: `Bug: ${summary}`,
+      description: details,
+      priority: { name: "Medium" },
+    },
+  };
+
+  try {
+    const res = await axios.post(
+      `${JIRA_BASE_URL}/rest/api/2/issue`,
+      bugPayload,
+      authHeader
+    );
+    console.log(`✅ Bug created: ${res.data.key}`);
+    return res.data.key;
+  } catch (err) {
+    console.error("❌ Error creating bug:", err.response?.data || err.message);
+  }
+}
+
+// ===== STEP 3: LINK BUG TO EXECUTION =====
+async function linkBugToExecution(bugKey, execKey) {
+  const linkPayload = {
+    type: { name: "Relates" },
+    inwardIssue: { key: bugKey },
+    outwardIssue: { key: execKey },
+  };
+
+  try {
+    await axios.post(
+      `${JIRA_BASE_URL}/rest/api/2/issueLink`,
+      linkPayload,
+      authHeader
+    );
+    console.log(`🔗 Linked ${bugKey} to ${execKey}`);
+  } catch (err) {
+    console.error("❌ Error linking bug:", err.response?.data || err.message);
+  }
+}
+
+// ===== STEP 4: PARSE JUNIT & CREATE BUGS =====
+async function parseJUnitAndCreateBugs(execKey) {
+  const xml = fs.readFileSync(FILE_PATH, "utf8");
+  xml2js.parseString(xml, async (err, result) => {
+    if (err) throw err;
+
+    let testcases = [];
+
+    // Handle structure: <testsuites><testsuite><testcase>
+    if (result.testsuites && result.testsuites.testsuite) {
+      for (let suite of result.testsuites.testsuite) {
+        if (suite.testcase) {
+          testcases = testcases.concat(suite.testcase);
+        }
+      }
+    }
+
+    console.log(`📊 Found ${testcases.length} testcases in JUnit file`);
+
+    for (let tc of testcases) {
+      if (tc.failure) {
+        const name = tc.$.name;
+        const classname = tc.$.classname || "";
+        const error = tc.failure[0]._ || "Unknown error";
+
+        console.log(`❌ Failed: ${classname} - ${name}`);
+
+        const summary = `${classname} - ${name}`;
+        const details = `Test failed in execution ${execKey}\n\nError:\n${error}`;
+
+        const bugKey = await createBug(summary, details);
+        if (bugKey) {
+          await linkBugToExecution(bugKey, execKey);
+        }
+      }
+    }
+  });
+}
+
+// ===== RUN FLOW =====
+uploadJUnit();
