@@ -1,0 +1,72 @@
+@Transactional
+public BiaRpActivityEntity toEntity(UsersEntity usersEntity,
+                                    ActivityRequestDto activityRequestDTO,
+                                    BiaRpStaffEntity biaRpStaffEntity) {
+    try {
+        // 1️⃣ Try to fetch existing entity by composite key
+        Optional<BiaRpActivityEntity> existingEntityOpt =
+                activityRepo.findByUserActivityEmbeddedKey_UserIdAndUserActivityEmbeddedKey_ActivityId(
+                        usersEntity.getUserId(),
+                        activityRequestDTO.getActivityId()
+                );
+
+        if (existingEntityOpt.isPresent()) {
+            BiaRpActivityEntity existingEntity = existingEntityOpt.get();
+
+            // 2️⃣ If same staff -> just update role and return
+            if (existingEntity.getBiaRpStaffEntity() != null &&
+                existingEntity.getBiaRpStaffEntity().getStaffId().equals(biaRpStaffEntity.getStaffId())) {
+
+                entityManager.detach(existingEntity);
+                existingEntity.setRole(activityRequestDTO.getRole());
+                return existingEntity;
+            }
+
+            // 3️⃣ If different staff -> delete old and create new
+            BiaRpStaffEntity oldStaff = existingEntity.getBiaRpStaffEntity();
+            if (oldStaff != null && oldStaff.getBiaRpActivityEntities() != null) {
+                oldStaff.getBiaRpActivityEntities().remove(existingEntity);
+            }
+
+            activityRepo.deleteByUserIdAndActivityId(usersEntity.getUserId(), activityRequestDTO.getActivityId());
+            entityManager.flush();
+        }
+
+        // 4️⃣ Create new entity (safe path)
+        BiaRpActivityEntity newEntity = new BiaRpActivityEntity();
+        newEntity.setUserActivityEmbeddedKey(mapUserActivityEmbeddedKey(usersEntity, activityRequestDTO));
+        newEntity.setRole(activityRequestDTO.getRole());
+        newEntity.setBiaRpStaffEntity(biaRpStaffEntity);
+        return newEntity;
+
+    } catch (Exception ex) {
+        // Fallback if something goes wrong
+        BiaRpActivityEntity fallbackEntity = new BiaRpActivityEntity();
+        fallbackEntity.setUserActivityEmbeddedKey(mapUserActivityEmbeddedKey(usersEntity, activityRequestDTO));
+        fallbackEntity.setRole(activityRequestDTO.getRole());
+        fallbackEntity.setBiaRpStaffEntity(biaRpStaffEntity);
+        return fallbackEntity;
+    }
+}
+
+
+public List<BiaRpActivityEntity> toEntityList(List<ActivityRequestDto> activityRequestDtoList,
+                                              UsersEntity usersEntity,
+                                              BiaRpStaffEntity biaRpStaffEntity) {
+    List<BiaRpActivityEntity> list = new ArrayList<>();
+    if (activityRequestDtoList != null && !activityRequestDtoList.isEmpty()) {
+        for (ActivityRequestDto dto : activityRequestDtoList) {
+            list.add(toEntity(usersEntity, dto, biaRpStaffEntity));
+        }
+    }
+    return list;
+}
+
+Optional<BiaRpActivityEntity> findByUserActivityEmbeddedKey_UserIdAndUserActivityEmbeddedKey_ActivityId(
+        String userId, Long activityId);
+
+@Modifying
+@Transactional
+void deleteByUserIdAndActivityId(String userId, Long activityId);
+
+
