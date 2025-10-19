@@ -1,0 +1,36 @@
+#!/usr/bin/env node
+import { Command } from "commander";
+import chalk from "chalk";
+import { config } from "./config.js";
+import { uploadJUnit } from "./uploader.js";
+
+const program = new Command();
+
+program
+  .name("xray-uploader")
+  .description("Upload Playwright/Cypress JUnit reports to Jira Xray")
+  .version("1.0.0");
+
+program
+  .command("upload")
+  .description("Upload a JUnit XML report to Jira Xray")
+  .option(
+    "-r, --report <path>",
+    "Path to JUnit report file",
+    process.env.REPORT_PATH || "./results/test-results-junit.xml"
+  )
+  .action(async (options) => {
+    try {
+      console.log(chalk.blueBright("🚀 Starting Xray upload for project:"), chalk.yellow(config.projectKey));
+      console.log(chalk.gray("Using report file:"), chalk.green(options.report));
+
+      await uploadJUnit(options.report);
+
+      console.log(chalk.greenBright("✅ Upload completed successfully!"));
+    } catch (err) {
+      console.error(chalk.red("❌ Upload failed:"), err.message);
+      process.exit(1);
+    }
+  });
+
+program.parse(process.argv);
