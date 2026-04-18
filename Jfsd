@@ -1,0 +1,296 @@
+JAVA CORE + ADVANCED
+
+1. What are main features in Java 17?
+    Answer:
+
+* Records → immutable data classes
+* Sealed classes → restrict inheritance
+* Pattern matching (instanceof)
+* Switch enhancements
+* Text blocks
+
+⸻
+
+2. Difference: HashMap vs ConcurrentHashMap
+    Answer:
+    | Feature | HashMap | ConcurrentHashMap |
+    |––––|––––|——————|
+    | Thread-safe | ❌ | ✅ |
+    | Locking | None | Segment-level locking |
+    | Performance | Fast (single thread) | Better in concurrency |
+    | Null keys | 1 key allowed | ❌ not allowed |
+
+⸻
+
+3. Explain equals() vs hashCode()
+    Answer:
+
+* equals() → checks logical equality
+* hashCode() → bucket location in hash collections
+* Contract: If equals() is true → hashCode() must be same
+
+⸻
+
+4. What is Optional?
+    Answer:
+    A container to avoid NullPointerException.
+
+Optional name = Optional.ofNullable(user.getName());
+name.ifPresent(System.out::println);
+
+⸻
+
+JAVA STREAM (OBJECT BASED – IMPORTANT)
+
+5. Given:
+
+class Employee {
+int id;
+String name;
+String dept;
+double salary;
+}
+
+Q: Find highest paid employee per department
+Answer:
+
+Map<String, Optional> result =
+employees.stream()
+.collect(Collectors.groupingBy(
+Employee::getDept,
+Collectors.maxBy(Comparator.comparing(Employee::getSalary))
+));
+
+⸻
+
+6. Q: Get 2nd highest salary
+    Answer:
+
+double secondHighest =
+employees.stream()
+.map(Employee::getSalary)
+.distinct()
+.sorted(Comparator.reverseOrder())
+.skip(1)
+.findFirst()
+.orElse(0);
+
+⸻
+
+7. Q: Count employees in each department
+    Answer:
+
+Map<String, Long> count =
+employees.stream()
+.collect(Collectors.groupingBy(
+Employee::getDept,
+Collectors.counting()
+));
+
+⸻
+
+8. Q: Convert List → Map<id, name>
+    Answer:
+
+Map<Integer, String> map =
+employees.stream()
+.collect(Collectors.toMap(
+Employee::getId,
+Employee::getName
+));
+
+⸻
+
+SPRING BOOT
+
+9. What is Dependency Injection?
+    Answer:
+    Spring manages object creation & injects dependencies.
+
+@Service
+public class OrderService {
+@Autowired
+private PaymentService paymentService;
+}
+
+⸻
+
+10. Difference: @Component, @Service, @Repository
+    Answer:
+
+* @Component → generic
+* @Service → business logic
+* @Repository → DB layer + exception translation
+
+⸻
+
+11. What is @Transactional?
+    Answer:
+
+* Ensures DB operations are atomic
+* Rolls back on runtime exceptions
+
+⸻
+
+12. How does Spring Boot auto-configuration work?
+    Answer:
+    Uses:
+
+* @EnableAutoConfiguration
+* Classpath scanning
+* Conditional beans (@Conditional)
+
+⸻
+
+MICROSERVICES
+
+13. What is Circuit Breaker?
+    Answer:
+    Prevents cascading failures.
+
+Flow:
+
+* Service fails repeatedly → circuit opens
+* Requests fail fast
+* After timeout → half-open → retry
+
+Example: Resilience4j
+
+⸻
+
+14. API Gateway role?
+    Answer:
+
+* Single entry point
+* Auth, routing, rate limiting
+
+⸻
+
+REACT JS
+
+15. What are Hooks?
+    Answer:
+    Functions to use state/lifecycle in functional components.
+
+const [count, setCount] = useState(0);
+
+⸻
+
+16. Difference: useEffect vs useLayoutEffect
+    Answer:
+
+* useEffect → async, after render
+* useLayoutEffect → before paint (blocking)
+
+⸻
+
+17. What is Virtual DOM?
+    Answer:
+    Lightweight JS representation → improves performance by diffing updates.
+
+⸻
+
+SQL (MUST ASK)
+
+18. Find 2nd highest salary
+
+SELECT MAX(salary)
+FROM employees
+WHERE salary < (SELECT MAX(salary) FROM employees);
+
+⸻
+
+19. Difference: INNER JOIN vs LEFT JOIN
+    Answer:
+
+* INNER → matching rows only
+* LEFT → all left + matching right
+
+⸻
+
+20. Find duplicate records
+
+SELECT name, COUNT()
+FROM employees
+GROUP BY name
+HAVING COUNT() > 1;
+
+⸻
+
+DSA / LEETCODE STYLE
+
+21. Two Sum
+
+int[] twoSum(int[] nums, int target) {
+Map<Integer, Integer> map = new HashMap<>();
+for (int i = 0; i < nums.length; i++) {
+int diff = target - nums[i];
+if (map.containsKey(diff)) {
+return new int[]{map.get(diff), i};
+}
+map.put(nums[i], i);
+}
+return new int[]{};
+}
+
+⸻
+
+22. Longest Substring Without Repeating Characters
+
+int lengthOfLongestSubstring(String s) {
+Set set = new HashSet<>();
+int left = 0, max = 0;
+for (int right = 0; right < s.length(); right++) {  
+    while (set.contains(s.charAt(right))) {  
+        set.remove(s.charAt(left++));  
+    }  
+    set.add(s.charAt(right));  
+    max = Math.max(max, right - left + 1);  
+}  
+return max;  
+
+23. Reverse Linked List
+
+ListNode reverse(ListNode head) {
+ListNode prev = null;
+while (head != null) {
+ListNode next = head.next;
+head.next = prev;
+prev = head;
+head = next;
+}
+return prev;
+}
+
+⸻
+
+SYSTEM DESIGN
+
+24. Design URL Shortener
+    Answer:
+
+* Hashing (Base62)
+* DB mapping (short → long URL)
+* Cache (Redis)
+* Rate limiting
+* Analytics
+
+⸻
+
+BONUS
+
+25. Why Streams over loops?
+    Answer:
+
+* Declarative
+* Parallel processing
+* Cleaner code
+
+⸻
+
+26. What happens if hashCode() is constant?
+    Answer:
+
+* All elements go to same bucket
+* Performance → O(n)
+
